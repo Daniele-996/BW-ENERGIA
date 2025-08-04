@@ -30,7 +30,7 @@ public class Cliente {
     private LocalDate dataUltimoContatto;
     @Column(name = "fatturato_annuale")
     private int fatturatoAnnuale;
-    @OneToMany(mappedBy = "cliente")
+    @OneToMany
     private List<Fattura> fatture = new ArrayList<>();
     private String pec;
     private int telefono;
@@ -47,9 +47,9 @@ public class Cliente {
     @Enumerated(EnumType.STRING)
     private Tipo tipo;
     @OneToOne
-    @Column(name = "indirizzo_sede_operativa")
+    @JoinColumn(name = "indirizzo_sede_operativa")
     private Indirizzo indirizzoSedeOp;
     @OneToOne
-    @Column(name = "indirizzo_sede_legale")
+    @JoinColumn(name = "indirizzo_sede_legale")
     private Indirizzo indirizzoLegale;
 }

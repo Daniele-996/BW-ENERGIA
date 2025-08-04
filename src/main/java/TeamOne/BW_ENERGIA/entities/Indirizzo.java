@@ -17,5 +17,7 @@ public class Indirizzo {
     private String via;
     private int civico;
     private String localita;
+    @ManyToOne
+    @JoinColumn(name = "comune_id")
     private Comune comune;
 }
