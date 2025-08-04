@@ -2,6 +2,7 @@ package TeamOne.BW_ENERGIA.controllers;
 
 import TeamOne.BW_ENERGIA.entities.Cliente;
 import TeamOne.BW_ENERGIA.services.ClienteService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,7 +40,6 @@ public class ClienteController {
     public ResponseEntity<Cliente> update(@PathVariable Long id, @RequestBody Cliente cliente) {
         return clienteService.findById(id)
                 .map(existing -> {
-                    return ResponseEntity.ok(clienteService.save(cliente));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
