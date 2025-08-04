@@ -14,6 +14,7 @@ public class Comune {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private long id;
+    @Column(name = "progressivo_comune")
     private int progressivoComune;
     private String nome;
     private Provincia provincia;

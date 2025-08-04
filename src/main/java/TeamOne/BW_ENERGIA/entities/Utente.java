@@ -21,5 +21,6 @@ public class Utente {
     private String nome;
     private String cognome;
     private String avatar;
+    @Enumerated(EnumType.STRING)
     private Ruolo ruolo;
 }

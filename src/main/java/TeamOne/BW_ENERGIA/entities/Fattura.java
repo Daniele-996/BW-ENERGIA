@@ -19,5 +19,6 @@ public class Fattura {
     private LocalDate data;
     private int importo;
     private int numero;
+    @Column(name = "stati_fatture")
     private StatoFattura statoFattura;
 }
