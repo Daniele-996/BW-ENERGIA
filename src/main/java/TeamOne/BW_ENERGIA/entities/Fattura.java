@@ -1,5 +1,6 @@
 package TeamOne.BW_ENERGIA.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,5 +23,8 @@ public class Fattura {
     @ManyToOne
     @JoinColumn(name = "stati_fatture")
     private StatoFattura statoFattura;
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
+    @JsonIgnore
     private Cliente cliente;
 }
