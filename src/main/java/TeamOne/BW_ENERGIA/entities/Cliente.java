@@ -1,11 +1,23 @@
 package TeamOne.BW_ENERGIA.entities;
 
 import TeamOne.BW_ENERGIA.enums.Tipo;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Entity
+@Table(name = "clienti")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Cliente {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
+    private long id;
     private String ragioneSociale;
     private int partitaIva;
     private String email;
