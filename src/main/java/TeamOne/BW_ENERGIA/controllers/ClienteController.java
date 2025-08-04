@@ -1,4 +1,4 @@
-package TeamOne.BW_ENERGIA;
+package TeamOne.BW_ENERGIA.controllers;
 
 import TeamOne.BW_ENERGIA.entities.Cliente;
 import TeamOne.BW_ENERGIA.services.ClienteService;
