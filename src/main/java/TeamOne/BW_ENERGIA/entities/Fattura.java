@@ -21,4 +21,5 @@ public class Fattura {
     private int numero;
     @Column(name = "stati_fatture")
     private StatoFattura statoFattura;
+    private Cliente cliente;
 }

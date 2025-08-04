@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,8 +30,8 @@ public class Cliente {
     private LocalDate dataUltimoContatto;
     @Column(name = "fatturato_annuale")
     private int fatturatoAnnuale;
-    //@OneToMany
-    private List<Fattura> fatture;
+    @OneToMany(mappedBy = "cliente")
+    private List<Fattura> fatture = new ArrayList<>();
     private String pec;
     private int telefono;
     @Column(name = "email_contatto")
