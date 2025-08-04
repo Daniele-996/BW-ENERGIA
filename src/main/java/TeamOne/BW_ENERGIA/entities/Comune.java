@@ -17,5 +17,7 @@ public class Comune {
     @Column(name = "progressivo_comune")
     private int progressivoComune;
     private String nome;
+    @ManyToOne
+    @JoinColumn(name = "provincia_id")
     private Provincia provincia;
 }
