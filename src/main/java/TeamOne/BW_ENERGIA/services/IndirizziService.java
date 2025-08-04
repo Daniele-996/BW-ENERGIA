@@ -1,7 +1,6 @@
 package TeamOne.BW_ENERGIA.services;
 
 import TeamOne.BW_ENERGIA.entities.Indirizzo;
-import TeamOne.BW_ENERGIA.repositories.IndirizziRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +11,7 @@ import java.util.Optional;
 @Service
 public class IndirizziService {
     @Autowired
-    IndirizziRepository indirizziRepository;
+    IndirizzoRepository indirizzoRepository;
 
     public Page<Indirizzo> findAll(Pageable pageable) {
         return indirizziRepository.findAll(pageable);
