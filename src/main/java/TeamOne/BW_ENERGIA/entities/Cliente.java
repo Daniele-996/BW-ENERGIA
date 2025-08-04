@@ -30,7 +30,7 @@ public class Cliente {
     private LocalDate dataUltimoContatto;
     @Column(name = "fatturato_annuale")
     private int fatturatoAnnuale;
-    @OneToMany(mappedBy = "cliente")
+    @OneToMany
     private List<Fattura> fatture = new ArrayList<>();
     private String pec;
     private int telefono;

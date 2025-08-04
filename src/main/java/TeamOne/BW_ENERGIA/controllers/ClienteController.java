@@ -40,6 +40,8 @@ public class ClienteController {
     public ResponseEntity<Cliente> update(@PathVariable Long id, @RequestBody Cliente cliente) {
         return clienteService.findById(id)
                 .map(existing -> {
+                    BeanUtils.copyProperties(cliente, existing, "id", "fatture");
+                    return ResponseEntity.ok(clienteService.save(existing));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }

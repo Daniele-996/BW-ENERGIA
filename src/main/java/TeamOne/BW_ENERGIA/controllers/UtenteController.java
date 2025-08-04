@@ -1,7 +1,7 @@
 package TeamOne.BW_ENERGIA.controllers;
 
-import TeamOne.BW_ENERGIA.dto.UtenteDTO;
 import TeamOne.BW_ENERGIA.entities.Utente;
+import TeamOne.BW_ENERGIA.payloads.UtenteDTO;
 import TeamOne.BW_ENERGIA.services.UtenteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

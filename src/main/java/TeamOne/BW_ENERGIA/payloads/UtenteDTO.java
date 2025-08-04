@@ -1,4 +1,4 @@
-package TeamOne.BW_ENERGIA.dto;
+package TeamOne.BW_ENERGIA.payloads;
 
 import TeamOne.BW_ENERGIA.enums.Ruolo;
 import jakarta.validation.constraints.Email;
