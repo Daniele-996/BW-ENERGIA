@@ -46,8 +46,8 @@ public class UtenteController {
         utente.setPassword(passwordEncoder.encode(dto.password()));
         utente.setNome(dto.nome());
         utente.setCognome(dto.cognome());
-        utente.setAvatar(dto.avatar());
-        utente.setRuoli(dto.idRuoli());
+        // utente.setAvatar(dto.avatar());
+        // utente.setRuoli(dto.idRuoli());
 
         return ResponseEntity.ok(utenteService.save(utente));
     }
@@ -61,8 +61,8 @@ public class UtenteController {
                     existing.setPassword(passwordEncoder.encode(dto.password()));
                     existing.setNome(dto.nome());
                     existing.setCognome(dto.cognome());
-                    existing.setAvatar(dto.avatar());
-                    existing.setRuoli(dto.idRuoli());
+                    // existing.setAvatar(dto.avatar());
+                    // existing.setRuoli(dto.idRuoli());
                     return ResponseEntity.ok(utenteService.save(existing));
                 })
                 .orElse(ResponseEntity.notFound().build());
