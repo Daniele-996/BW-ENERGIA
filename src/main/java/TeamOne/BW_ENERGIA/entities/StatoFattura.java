@@ -1,6 +1,7 @@
 package TeamOne.BW_ENERGIA.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
@@ -14,5 +15,7 @@ public class StatoFattura {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private long id;
+
+    @NotBlank
     private String stato;
 }

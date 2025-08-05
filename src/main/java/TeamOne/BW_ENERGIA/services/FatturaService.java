@@ -9,6 +9,10 @@ import TeamOne.BW_ENERGIA.repositories.ClienteRepository;
 import TeamOne.BW_ENERGIA.repositories.FatturaRepository;
 import TeamOne.BW_ENERGIA.repositories.StatoFatturaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +28,12 @@ public class FatturaService {
 
     public List<Fattura> findAll() {
         return fatturaRepository.findAll();
+    }
+
+    public Page<Fattura> findAll(int page, int size, String sortBy) {
+        if (size > 50) size = 50;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        return this.fatturaRepository.findAll(pageable);
     }
 
     public Fattura creaFattura(FatturaDTO payload) {

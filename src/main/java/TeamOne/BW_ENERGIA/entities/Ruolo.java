@@ -4,24 +4,25 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
-@Table(name = "province")
+@Table(name = "ruoli")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Provincia {
+public class Ruolo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private long id;
 
     @NotBlank
-    private String sigla;
+    private String ruolo;
 
     @NotBlank
-    private String nome;
-
-    @NotBlank
-    private String regione;
+    @ManyToMany(mappedBy = "ruoli")
+    private List<Utente> utenti = new ArrayList<>();
 }
