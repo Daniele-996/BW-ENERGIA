@@ -42,7 +42,7 @@ public class Utente implements UserDetails {
     private String cognome;
 
     @NotBlank
-    private String avatar;
+    private String avatar = "https://yourdomain.com/images/avatar-placeholder.png";
 
     @NotBlank
     @ManyToMany
