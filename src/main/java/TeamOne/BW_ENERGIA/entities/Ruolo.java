@@ -1,7 +1,6 @@
 package TeamOne.BW_ENERGIA.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -19,10 +18,8 @@ public class Ruolo {
     @Setter(AccessLevel.NONE)
     private long id;
 
-    @NotBlank
     private String ruolo;
 
-    @NotBlank
     @ManyToMany(mappedBy = "ruoli")
     private List<Utente> utenti = new ArrayList<>();
 }

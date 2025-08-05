@@ -21,7 +21,7 @@ public class SecurityConfig {
         httpSecurity.csrf(csrf -> csrf.disable());
 
         httpSecurity.sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        httpSecurity.authorizeHttpRequests(h -> h.requestMatchers("/auth/**").permitAll());
+        httpSecurity.authorizeHttpRequests(h -> h.requestMatchers("/api/auth/**").permitAll());
 
 
         httpSecurity.cors(Customizer.withDefaults());

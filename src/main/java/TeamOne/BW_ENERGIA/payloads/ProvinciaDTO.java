@@ -1,17 +1,17 @@
 package TeamOne.BW_ENERGIA.payloads;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record ProvinciaDTO(
         Long id,
 
-        @NotBlank
+        @NotNull
         String sigla,
 
-        @NotBlank
+        @NotNull
         String nome,
 
-        @NotBlank
+        @NotNull
         String regione
 ) {
 }
