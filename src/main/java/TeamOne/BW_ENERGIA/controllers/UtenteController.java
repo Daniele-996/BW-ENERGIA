@@ -6,6 +6,7 @@ import TeamOne.BW_ENERGIA.services.UtenteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,9 @@ public class UtenteController {
 
     @Autowired
     private UtenteService utenteService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping
     public List<Utente> getAll() {
@@ -38,7 +42,7 @@ public class UtenteController {
         Utente utente = new Utente();
         utente.setUsername(dto.username());
         utente.setEmail(dto.email());
-        utente.setPassword(dto.password()); //TODO: criptare la password
+        utente.setPassword(passwordEncoder.encode(dto.password()));
         utente.setNome(dto.nome());
         utente.setCognome(dto.cognome());
         utente.setAvatar(dto.avatar());
@@ -53,7 +57,7 @@ public class UtenteController {
                 .map(existing -> {
                     existing.setUsername(dto.username());
                     existing.setEmail(dto.email());
-                    existing.setPassword(dto.password()); //TODO: criptare la password
+                    existing.setPassword(passwordEncoder.encode(dto.password()));
                     existing.setNome(dto.nome());
                     existing.setCognome(dto.cognome());
                     existing.setAvatar(dto.avatar());
