@@ -1,9 +1,9 @@
 package TeamOne.BW_ENERGIA.payloads;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record LoginRequest(
-        @NotBlank String username,
-        @NotBlank String password
+        @NotNull String username,
+        @NotNull String password
 ) {
 }

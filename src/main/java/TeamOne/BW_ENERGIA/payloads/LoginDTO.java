@@ -1,10 +1,11 @@
 package TeamOne.BW_ENERGIA.payloads;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record LoginDTO(
-        @NotBlank(message = "Username  obbligatorio!")
+        @NotNull(message = "Username  obbligatorio!")
         String email,
-        @NotBlank(message = "Password obbligatoria!")
+        @NotNull(message = "Password obbligatoria!")
         String password
-) {}
+) {
+}
