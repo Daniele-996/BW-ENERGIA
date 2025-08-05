@@ -4,9 +4,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "utenti")
@@ -14,7 +19,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Utente {
+public class Utente implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
@@ -45,4 +50,12 @@ public class Utente {
             joinColumns = @JoinColumn(name = "utenti_id"),
             inverseJoinColumns = @JoinColumn(name = "ruoli_id"))
     private List<Ruolo> ruoli = new ArrayList<>();
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return ruoli.stream()
+                .map(ruolo -> new SimpleGrantedAuthority(ruolo.getRuolo()))
+                .collect(Collectors.toList());
+    }
 }
