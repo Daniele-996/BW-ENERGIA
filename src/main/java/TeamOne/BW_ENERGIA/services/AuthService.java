@@ -16,8 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-
 @Service
 public class AuthService {
     @Autowired
@@ -29,7 +27,7 @@ public class AuthService {
     @Autowired
     private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
-    public ResponseEntity<?> register(RegisterRequest request){
+    public ResponseEntity<?> register(RegisterRequest request) {
         if (utenteRepository.existsByUsername(request.username()))
             throw new BadRequestException("Username già esistente");
         if (utenteRepository.existsByEmail(request.email()))
@@ -44,16 +42,16 @@ public class AuthService {
         utente.setPassword(passwordEncoder.encode(request.password()));
         utente.setNome(request.nome());
         utente.setCognome(request.cognome());
-        utente.setRuoli(Collections.singletonList(ruolo));
+        //utente.setRuoli(Collections.singletonList(ruolo));
 
         utenteRepository.save(utente);
         return ResponseEntity.ok("Registrazione avvenuta con successo");
     }
 
-    public ResponseEntity<?> login(LoginRequest request){
+    public ResponseEntity<?> login(LoginRequest request) {
         Utente utente = utenteRepository.findByUsername(request.username()).orElseThrow(() -> new UnauthorizedException("Username o pasword non validi"));
         if (!passwordEncoder.matches(request.password(), utente.getPassword()))
-            throw  new UnauthorizedException("Username o password non validi");
+            throw new UnauthorizedException("Username o password non validi");
         String token = jwtTools.createToken(utente);
         return ResponseEntity.ok(token);
     }

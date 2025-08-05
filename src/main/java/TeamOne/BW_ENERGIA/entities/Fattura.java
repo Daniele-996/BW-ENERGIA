@@ -2,7 +2,6 @@ package TeamOne.BW_ENERGIA.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -19,21 +18,16 @@ public class Fattura {
     @Setter(AccessLevel.NONE)
     private long id;
 
-    @NotBlank
     private LocalDate data;
 
-    @NotBlank
     private int importo;
 
-    @NotBlank
     private int numero;
 
-    @NotBlank
     @ManyToOne
     @JoinColumn(name = "stati_fatture")
     private StatoFattura statoFattura;
 
-    @NotBlank
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     @JsonIgnore

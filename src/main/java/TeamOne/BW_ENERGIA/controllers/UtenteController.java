@@ -6,7 +6,9 @@ import TeamOne.BW_ENERGIA.services.UtenteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,6 +18,9 @@ public class UtenteController {
 
     @Autowired
     private UtenteService utenteService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping
     public List<Utente> getAll() {
@@ -38,11 +43,11 @@ public class UtenteController {
         Utente utente = new Utente();
         utente.setUsername(dto.username());
         utente.setEmail(dto.email());
-        utente.setPassword(dto.password()); //TODO: criptare la password
+        utente.setPassword(passwordEncoder.encode(dto.password()));
         utente.setNome(dto.nome());
         utente.setCognome(dto.cognome());
-        utente.setAvatar(dto.avatar());
-        utente.setRuoli(dto.idRuoli());
+        // utente.setAvatar(dto.avatar());
+        // utente.setRuoli(dto.idRuoli());
 
         return ResponseEntity.ok(utenteService.save(utente));
     }
@@ -53,11 +58,11 @@ public class UtenteController {
                 .map(existing -> {
                     existing.setUsername(dto.username());
                     existing.setEmail(dto.email());
-                    existing.setPassword(dto.password()); //TODO: criptare la password
+                    existing.setPassword(passwordEncoder.encode(dto.password()));
                     existing.setNome(dto.nome());
                     existing.setCognome(dto.cognome());
-                    existing.setAvatar(dto.avatar());
-                    existing.setRuoli(dto.idRuoli());
+                    // existing.setAvatar(dto.avatar());
+                    // existing.setRuoli(dto.idRuoli());
                     return ResponseEntity.ok(utenteService.save(existing));
                 })
                 .orElse(ResponseEntity.notFound().build());
@@ -70,5 +75,13 @@ public class UtenteController {
         }
         utenteService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{userId}/avatar")
+    public String uploadImage(@RequestParam("avatar") MultipartFile file) {
+        System.out.println(file.getOriginalFilename());
+        System.out.println(file.getSize());
+        return this.utenteService.uploadAvatar(file);
+
     }
 }

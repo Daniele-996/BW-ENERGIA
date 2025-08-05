@@ -1,8 +1,6 @@
 package TeamOne.BW_ENERGIA.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,26 +23,18 @@ public class Utente implements UserDetails {
     @Setter(AccessLevel.NONE)
     private long id;
 
-    @NotBlank
     private String username;
 
-    @NotBlank
-    @Email
     private String email;
 
-    @NotBlank
     private String password;
 
-    @NotBlank
     private String nome;
 
-    @NotBlank
     private String cognome;
 
-    @NotBlank
-    private String avatar;
+    private String avatar = "https://yourdomain.com/images/avatar-placeholder.png";
 
-    @NotBlank
     @ManyToMany
     @JoinTable(name = "utenti_ruoli",
             joinColumns = @JoinColumn(name = "utenti_id"),
