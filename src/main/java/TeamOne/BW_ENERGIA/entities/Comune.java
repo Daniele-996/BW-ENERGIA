@@ -1,6 +1,7 @@
 package TeamOne.BW_ENERGIA.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
@@ -14,9 +15,15 @@ public class Comune {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private long id;
+
+    @NotBlank
     @Column(name = "progressivo_comune")
     private int progressivoComune;
+
+    @NotBlank
     private String nome;
+
+    @NotBlank
     @ManyToOne
     @JoinColumn(name = "provincia_id")
     private Provincia provincia;
