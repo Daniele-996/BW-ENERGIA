@@ -42,7 +42,7 @@ public class UtenteController {
         utente.setNome(dto.nome());
         utente.setCognome(dto.cognome());
         utente.setAvatar(dto.avatar());
-        utente.setRuolo(dto.ruolo());
+        utente.setRuoli(dto.idRuoli());
 
         return ResponseEntity.ok(utenteService.save(utente));
     }
@@ -57,7 +57,7 @@ public class UtenteController {
                     existing.setNome(dto.nome());
                     existing.setCognome(dto.cognome());
                     existing.setAvatar(dto.avatar());
-                    existing.setRuolo(dto.ruolo());
+                    existing.setRuoli(dto.idRuoli());
                     return ResponseEntity.ok(utenteService.save(existing));
                 })
                 .orElse(ResponseEntity.notFound().build());

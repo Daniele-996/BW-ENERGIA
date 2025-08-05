@@ -1,9 +1,11 @@
 package TeamOne.BW_ENERGIA.payloads;
 
-import TeamOne.BW_ENERGIA.enums.Ruolo;
+import TeamOne.BW_ENERGIA.entities.Ruolo;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
 
 public record UtenteDTO(
         @NotBlank(message = "Lo username è obbligatorio")
@@ -26,6 +28,6 @@ public record UtenteDTO(
 
         String avatar,
 
-        Ruolo ruolo
+        List<Ruolo> idRuoli
 ) {
 }

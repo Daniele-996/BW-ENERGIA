@@ -1,8 +1,10 @@
 package TeamOne.BW_ENERGIA.entities;
 
-import TeamOne.BW_ENERGIA.enums.Ruolo;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "utenti")
@@ -21,6 +23,9 @@ public class Utente {
     private String nome;
     private String cognome;
     private String avatar;
-    @Enumerated(EnumType.STRING)
-    private Ruolo ruolo;
+    @ManyToMany
+    @JoinTable(name = "utenti_ruoli",
+            joinColumns = @JoinColumn(name = "utenti_id"),
+            inverseJoinColumns = @JoinColumn(name = "ruoli_id"))
+    private List<Ruolo> ruoli = new ArrayList<>();
 }
