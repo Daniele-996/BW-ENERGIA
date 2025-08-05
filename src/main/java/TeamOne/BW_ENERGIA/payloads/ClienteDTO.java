@@ -2,59 +2,59 @@ package TeamOne.BW_ENERGIA.payloads;
 
 import TeamOne.BW_ENERGIA.enums.Tipo;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
 public record ClienteDTO(
-        @NotBlank
+        @NotNull
         String ragioneSociale,
 
-        @NotBlank
+        @NotNull
         int partitaIva,
 
-        @NotBlank
+        @NotNull
         @Email
         String email,
 
-        @NotBlank
+        @NotNull
         LocalDate dataInserimento,
 
-        @NotBlank
+        @NotNull
         LocalDate dataUltimoContatto,
 
-        @NotBlank
+        @NotNull
         int fatturatoAnnuale,
 
-        @NotBlank
+        @NotNull
         @Email
         String pec,
 
-        @NotBlank
+        @NotNull
         int telefono,
 
-        @NotBlank
+        @NotNull
         @Email
         String emailContatto,
 
-        @NotBlank
+        @NotNull
         String nomeContatto,
 
-        @NotBlank
+        @NotNull
         String cognomeContatto,
 
-        @NotBlank
+        @NotNull
         int telefonoContatto,
 
-        @NotBlank
+        @NotNull
         String logoAziendale,
 
-        @NotBlank
+        @NotNull
         Tipo tipo,
 
-        @NotBlank
+        @NotNull
         Long indirizzoSedeOpId,
 
-        @NotBlank
+        @NotNull
         Long indirizzoLegaleId) {
 }
