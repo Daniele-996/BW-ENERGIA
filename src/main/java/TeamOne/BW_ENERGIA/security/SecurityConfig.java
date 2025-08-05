@@ -21,7 +21,7 @@ public class SecurityConfig {
         httpSecurity.csrf(csrf -> csrf.disable());
 
         httpSecurity.sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        httpSecurity.authorizeHttpRequests(h -> h.requestMatchers("/**").permitAll());
+        httpSecurity.authorizeHttpRequests(h -> h.requestMatchers("/auth/**").permitAll());
 
 
         httpSecurity.cors(Customizer.withDefaults());
@@ -30,7 +30,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public org.springframework.security.crypto.password.PasswordEncoder passwordEncoder(){
+    public org.springframework.security.crypto.password.PasswordEncoder passwordEncoder() {
         return new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
     }
 }
