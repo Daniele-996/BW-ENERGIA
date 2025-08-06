@@ -15,7 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @Service
 public class FatturaService {
@@ -25,10 +25,6 @@ public class FatturaService {
     private ClienteRepository clienteRepository;
     @Autowired
     private StatoFatturaRepository statoFatturaRepository;
-
-    public List<Fattura> findAll() {
-        return fatturaRepository.findAll();
-    }
 
     public Page<Fattura> findAll(int page, int size, String sortBy) {
         if (size > 50) size = 50;
@@ -71,6 +67,26 @@ public class FatturaService {
     public void findByIdAndDelete(Long id) {
         Fattura fattura = findById(id);
         fatturaRepository.delete(fattura);
+    }
+
+    public Page<Fattura> filterByClienteId(Long clienteId, Pageable pageable) {
+        return fatturaRepository.findByClienteId(clienteId, pageable);
+    }
+
+    public Page<Fattura> filterByStato(String statoNome, Pageable pageable) {
+        return fatturaRepository.findByStatoFatturaStato(statoNome, pageable);
+    }
+
+    public Page<Fattura> filterByData(LocalDate data, Pageable pageable) {
+        return fatturaRepository.findByData(data, pageable);
+    }
+
+    public Page<Fattura> filterByAnno(int anno, Pageable pageable) {
+        return fatturaRepository.findByAnno(anno, pageable);
+    }
+
+    public Page<Fattura> filterByImportoRange(int min, int max, Pageable pageable) {
+        return fatturaRepository.findByImportoBetween(min, max, pageable);
     }
 
 }

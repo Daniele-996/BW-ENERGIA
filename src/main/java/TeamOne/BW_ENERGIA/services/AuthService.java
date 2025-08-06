@@ -16,25 +16,33 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+
 @Service
 public class AuthService {
+
     @Autowired
     private UtenteRepository utenteRepository;
+
     @Autowired
     private RuoloRepository ruoloRepository;
+
     @Autowired
     private JWTTools jwtTools;
+
     @Autowired
-    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     public ResponseEntity<?> register(RegisterRequest request) {
         if (utenteRepository.existsByUsername(request.username()))
             throw new BadRequestException("Username già esistente");
+
         if (utenteRepository.existsByEmail(request.email()))
-            throw new BadRequestException(("Email già esistente"));
+            throw new BadRequestException("Email già esistente");
 
         Ruolo ruolo = ruoloRepository.findByRuolo("UTENTE");
-        if (ruolo == null) throw new BadRequestException("Ruolo UTENTE non trovato");
+        if (ruolo == null)
+            throw new BadRequestException("Ruolo UTENTE non trovato");
 
         Utente utente = new Utente();
         utente.setUsername(request.username());
@@ -42,16 +50,19 @@ public class AuthService {
         utente.setPassword(passwordEncoder.encode(request.password()));
         utente.setNome(request.nome());
         utente.setCognome(request.cognome());
-        //utente.setRuoli(Collections.singletonList(ruolo));
+        utente.setRuoli(Collections.singletonList(ruolo));
 
         utenteRepository.save(utente);
         return ResponseEntity.ok("Registrazione avvenuta con successo");
     }
 
     public ResponseEntity<?> login(LoginRequest request) {
-        Utente utente = utenteRepository.findByUsername(request.username()).orElseThrow(() -> new UnauthorizedException("Username o pasword non validi"));
+        Utente utente = utenteRepository.findByUsername(request.username())
+                .orElseThrow(() -> new UnauthorizedException("Username o password non validi"));
+
         if (!passwordEncoder.matches(request.password(), utente.getPassword()))
             throw new UnauthorizedException("Username o password non validi");
+
         String token = jwtTools.createToken(utente);
         return ResponseEntity.ok(token);
     }

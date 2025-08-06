@@ -120,7 +120,7 @@ public class RecordDbRunner implements CommandLineRunner {
         }
 
         // Popola Fatture
-        if (fatturaService.findAll().isEmpty()) {
+        if (fatturaService.findAll(0, 15, "id").isEmpty()) {
             Cliente cliente = clienteService.findAll(Pageable.unpaged()).getContent().get(0);
             Fattura fattura = new Fattura();
             fattura.setData(LocalDate.now());
