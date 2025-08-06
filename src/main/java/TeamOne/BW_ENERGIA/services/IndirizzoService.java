@@ -8,7 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class IndirizzoService {
@@ -29,5 +31,15 @@ public class IndirizzoService {
 
     public void deleteById(Long id) {
         indirizzoRepository.deleteById(id);
+    }
+
+    public Map<Object, Object> findAll() {
+    return indirizzoRepository.findAll().stream()
+            .collect(Collectors.toMap(Indirizzo::getId, indirizzo -> Map.of(
+                    "via", indirizzo.getVia(),
+                    "civico", indirizzo.getCivico(),
+                    "comune", indirizzo.getComune().getNome(),
+                    "provincia", indirizzo.getComune().getProvincia().getNome()
+            )));
     }
 }

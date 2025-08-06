@@ -17,13 +17,30 @@ import java.util.Optional;
 public class UtenteService {
 
     @Autowired
-    private UtenteRepository utenteRepository;
+    private static UtenteRepository utenteRepository;
 
     @Autowired
     private Cloudinary imgUploader;
 
-    public List<Utente> findAll() {
-        return utenteRepository.findAll();
+    public Map<Object, Object> findAllMapped() {
+        return utenteRepository.findAll().stream()
+                .collect(java.util.stream.Collectors.toMap(
+                        Utente::getId,
+                        utente -> {
+                            Map<String, Object> mappa = new java.util.HashMap<>();
+                            mappa.put("id", utente.getId());
+                            mappa.put("username", utente.getUsername());
+                            mappa.put("email", utente.getEmail());
+                            mappa.put("password", utente.getPassword());
+                            mappa.put("nome", utente.getNome());
+                            mappa.put("cognome", utente.getCognome());
+                            mappa.put("avatar", utente.getAvatar());
+                            return mappa;
+                        }
+                ));
+    }
+
+    public static List<Utente> findAll() { return utenteRepository.findAll();
     }
 
     public Optional<Utente> findById(Long id) {
