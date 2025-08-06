@@ -43,7 +43,7 @@ public class RecordDbRunner implements CommandLineRunner {
         } else {
             System.out.print("Sono presenti " + ruoloService.findAll().size() + "ruoli nel database");
         }
-        if (UtenteService.findAll().isEmpty()){
+        if (utenteService.findAll().isEmpty()){
             System.out.print("Non ci sono fatture");
         } else {
             System.out.print("Sono presenti " + utenteService.findAll().size() + "utenti nel database");
