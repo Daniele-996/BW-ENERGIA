@@ -50,23 +50,27 @@ public class ComuneRunner implements CommandLineRunner {
 
                 String[] columns = line.split(";");
 
-                if (columns.length < 3) {
+                if (columns.length < 4) {
                     righeScartate++;
                     continue;
                 }
+
+                String codiceProvinciaStr = columns[0].trim();
+                String progressivoStr = columns[1].trim();
+                String nomeComune = columns[2].trim();
+                String nomeProvincia = columns[3].trim();
+
+                if (nomeComune.isEmpty() || nomeProvincia.isEmpty()) {
+                    righeScartate++;
+                    continue;
+                }
+
                 try {
-                    int progressivo = Integer.parseInt(columns[0].trim());
-                    String nomeComune = columns[1].trim();
-                    String siglaProvincia = columns[2].trim();
+                    int progressivo = progressivoStr.isEmpty() ? 0 : Integer.parseInt(progressivoStr);
 
-                    if (nomeComune.isEmpty() || siglaProvincia.isEmpty()) {
-                        righeScartate++;
-                        continue;
-                    }
-
-                    Optional<Provincia> provinciaOpt = provinciaRepository.findBySigla(siglaProvincia);
+                    Optional<Provincia> provinciaOpt = provinciaRepository.findByNomeIgnoreCase(nomeProvincia);
                     if (provinciaOpt.isEmpty()) {
-                        System.out.println("Provincia non trovata (sigla): " + siglaProvincia);
+                        System.out.println("❌ Provincia non trovata per nome: " + nomeProvincia);
                         righeScartate++;
                         continue;
                     }
@@ -79,10 +83,10 @@ public class ComuneRunner implements CommandLineRunner {
                     comuniValidi.add(comune);
 
                 } catch (NumberFormatException e) {
-                    System.out.println("Progressivo non valido: " + columns[0]);
+                    System.out.println("❌ Progressivo non numerico: " + progressivoStr);
                     righeScartate++;
                 } catch (Exception e) {
-                    System.out.println("Errore imprevisto alla riga: " + line);
+                    System.out.println("❌ Errore alla riga: " + line);
                     righeScartate++;
                 }
             }
