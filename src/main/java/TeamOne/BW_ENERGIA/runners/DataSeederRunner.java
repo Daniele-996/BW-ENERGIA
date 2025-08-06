@@ -5,6 +5,7 @@ import TeamOne.BW_ENERGIA.entities.Provincia;
 import TeamOne.BW_ENERGIA.repositories.ComuneRepository;
 import TeamOne.BW_ENERGIA.repositories.ProvinciaRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,19 +16,88 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-//@Component
-public class ComuneRunner implements CommandLineRunner {
+@Component
+public class DataSeederRunner implements CommandLineRunner {
 
-    private final ComuneRepository comuneRepository;
     private final ProvinciaRepository provinciaRepository;
+    private final ComuneRepository comuneRepository;
 
-    public ComuneRunner(ComuneRepository comuneRepository, ProvinciaRepository provinciaRepository) {
-        this.comuneRepository = comuneRepository;
+    public DataSeederRunner(ComuneRepository comuneRepository, ProvinciaRepository provinciaRepository) {
         this.provinciaRepository = provinciaRepository;
+        this.comuneRepository = comuneRepository;
     }
 
     @Override
     public void run(String... args) {
+        if (provinciaRepository.count() > 0 || comuneRepository.count() > 0) {
+            System.out.println("Seeder non eseguito: province o comuni già presenti nel database.");
+            return;
+        }
+
+        popolaProvince();
+        popolaComuni();
+    }
+
+    private void popolaProvince() {
+        String filePath = new File("src/main/java/TeamOne/BW_ENERGIA/csv/province-italiane.csv").getAbsolutePath();
+        boolean isFirstLine = true;
+
+        int salvate = 0;
+        int scartate = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue;
+                }
+
+                if (line.trim().isEmpty()) {
+                    scartate++;
+                    continue;
+                }
+
+                String[] columns = line.split(";");
+
+                if (columns.length < 3) {
+                    scartate++;
+                    continue;
+                }
+
+                String sigla = columns[0].trim();
+                String nome = columns[1].trim();
+                String regione = columns[2].trim();
+
+                if (sigla.isEmpty() || nome.isEmpty() || regione.isEmpty()) {
+                    scartate++;
+                    continue;
+                }
+
+                Optional<Provincia> existing = provinciaRepository.findBySigla(sigla);
+                if (existing.isPresent()) {
+                    continue;
+                }
+
+                Provincia provincia = new Provincia();
+                provincia.setSigla(sigla);
+                provincia.setNome(nome);
+                provincia.setRegione(regione);
+
+                provinciaRepository.save(provincia);
+                salvate++;
+            }
+
+            System.out.println("Province salvate: " + salvate);
+            System.out.println("Province scartate: " + scartate);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void popolaComuni() {
         String filePath = new File("src/main/java/TeamOne/BW_ENERGIA/csv/comuni-italiani.csv").getAbsolutePath();
         boolean isFirstLine = true;
 
@@ -70,14 +140,14 @@ public class ComuneRunner implements CommandLineRunner {
                         progressivo = Integer.parseInt(progressivoStr);
                     } catch (NumberFormatException e) {
                         progressivo = progressivoFittizio++;
-                        System.out.println("⚠️ Progressivo non valido (" + progressivoStr + "), assegnato fittizio: " + progressivo);
+                        System.out.println("Progressivo non valido (" + progressivoStr + "), assegnato fittizio: " + progressivo);
                     }
 
                     String nomeProvinciaNormalizzato = normalizzaNomeProvincia(nomeProvinciaRaw);
                     Optional<Provincia> provinciaOpt = provinciaRepository.findByNomeIgnoreCase(nomeProvinciaNormalizzato);
 
                     if (provinciaOpt.isEmpty()) {
-                        System.out.println("❌ Provincia non trovata per nome: " + nomeProvinciaRaw + " ➜ cercato come: " + nomeProvinciaNormalizzato);
+                        System.out.println("Provincia non trovata per nome: " + nomeProvinciaRaw + " ➜ cercato come: " + nomeProvinciaNormalizzato);
                         righeScartate++;
                         continue;
                     }
@@ -90,14 +160,14 @@ public class ComuneRunner implements CommandLineRunner {
                     comuniValidi.add(comune);
 
                 } catch (Exception e) {
-                    System.out.println("❌ Errore imprevisto alla riga: " + line);
+                    System.out.println("Errore imprevisto alla riga: " + line);
                     righeScartate++;
                 }
             }
 
             comuneRepository.saveAll(comuniValidi);
-            System.out.println("✅ Comuni salvati: " + comuniValidi.size());
-            System.out.println("⚠️  Righe scartate: " + righeScartate);
+            System.out.println("Comuni salvati: " + comuniValidi.size());
+            System.out.println("Righe scartate: " + righeScartate);
 
         } catch (IOException e) {
             e.printStackTrace();

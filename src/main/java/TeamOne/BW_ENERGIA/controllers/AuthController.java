@@ -16,13 +16,15 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    //Tutti
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request){
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         return authService.register(request);
     }
 
+    //Tutti
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request){
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         return authService.login(request);
     }
 }
