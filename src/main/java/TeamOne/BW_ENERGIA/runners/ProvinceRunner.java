@@ -3,7 +3,6 @@ package TeamOne.BW_ENERGIA.runners;
 import TeamOne.BW_ENERGIA.entities.Provincia;
 import TeamOne.BW_ENERGIA.repositories.ProvinciaRepository;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,7 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Optional;
 
-@Component
+//@Component
 public class ProvinceRunner implements CommandLineRunner {
 
     private final ProvinciaRepository provinciaRepository;
@@ -48,9 +47,9 @@ public class ProvinceRunner implements CommandLineRunner {
                     continue;
                 }
 
-                String sigla = columns[0].trim();       // Codice provincia
-                String nome = columns[1].trim();        // Denominazione
-                String regione = columns[2].trim();     // Regione
+                String sigla = columns[0].trim();
+                String nome = columns[1].trim();
+                String regione = columns[2].trim();
 
                 if (sigla.isEmpty() || nome.isEmpty() || regione.isEmpty()) {
                     scartate++;
@@ -59,7 +58,6 @@ public class ProvinceRunner implements CommandLineRunner {
 
                 Optional<Provincia> existing = provinciaRepository.findBySigla(sigla);
                 if (existing.isPresent()) {
-                    // già esiste → skip o aggiorna se vuoi
                     continue;
                 }
 
