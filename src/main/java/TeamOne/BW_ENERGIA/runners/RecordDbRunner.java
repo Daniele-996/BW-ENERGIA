@@ -23,27 +23,27 @@ public class RecordDbRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        if (fatturaService.findAll().isEmpty()){
+        if (fatturaService.findAll().isEmpty()) {
             System.out.print("Non ci sono fatture");
         } else {
             System.out.print("Sono presenti " + fatturaService.findAll().size() + "fatture nel database");
         }
-        if (indirizzoService.findAll().isEmpty()){
+        if (indirizzoService.findAll().isEmpty()) {
             System.out.print("Non ci sono indirizzi");
         } else {
             System.out.print("Sono presenti " + indirizzoService.findAll().size() + "indirizzi nel database");
         }
-        if (clienteService.findAll().isEmpty()){
+        if (clienteService.findAll().isEmpty()) {
             System.out.print("Non ci sono fatture");
         } else {
             System.out.print("Sono presenti " + clienteService.findAll().size() + "clienti nel database");
         }
-        if (ruoloService.findAll().isEmpty()){
+        if (ruoloService.findAll().isEmpty()) {
             System.out.print("Non ci sono fatture");
         } else {
             System.out.print("Sono presenti " + ruoloService.findAll().size() + "ruoli nel database");
         }
-        if (utenteService.findAll().isEmpty()){
+        if (utenteService.findAll().isEmpty()) {
             System.out.print("Non ci sono fatture");
         } else {
             System.out.print("Sono presenti " + utenteService.findAll().size() + "utenti nel database");
