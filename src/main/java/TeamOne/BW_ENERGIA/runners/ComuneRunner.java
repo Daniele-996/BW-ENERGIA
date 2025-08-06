@@ -5,7 +5,6 @@ import TeamOne.BW_ENERGIA.entities.Provincia;
 import TeamOne.BW_ENERGIA.repositories.ComuneRepository;
 import TeamOne.BW_ENERGIA.repositories.ProvinciaRepository;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Component
+//@Component
 public class ComuneRunner implements CommandLineRunner {
 
     private final ComuneRepository comuneRepository;
@@ -71,14 +70,14 @@ public class ComuneRunner implements CommandLineRunner {
                         progressivo = Integer.parseInt(progressivoStr);
                     } catch (NumberFormatException e) {
                         progressivo = progressivoFittizio++;
-                        System.out.println("⚠️ Progressivo non valido (" + progressivoStr + "), assegnato fittizio: " + progressivo);
+                        System.out.println("Progressivo non valido (" + progressivoStr + "), assegnato fittizio: " + progressivo);
                     }
 
                     String nomeProvinciaNormalizzato = normalizzaNomeProvincia(nomeProvinciaRaw);
                     Optional<Provincia> provinciaOpt = provinciaRepository.findByNomeIgnoreCase(nomeProvinciaNormalizzato);
 
                     if (provinciaOpt.isEmpty()) {
-                        System.out.println("❌ Provincia non trovata per nome: " + nomeProvinciaRaw + " ➜ cercato come: " + nomeProvinciaNormalizzato);
+                        System.out.println("Provincia non trovata per nome: " + nomeProvinciaRaw + " ➜ cercato come: " + nomeProvinciaNormalizzato);
                         righeScartate++;
                         continue;
                     }
@@ -91,14 +90,14 @@ public class ComuneRunner implements CommandLineRunner {
                     comuniValidi.add(comune);
 
                 } catch (Exception e) {
-                    System.out.println("❌ Errore imprevisto alla riga: " + line);
+                    System.out.println("Errore imprevisto alla riga: " + line);
                     righeScartate++;
                 }
             }
 
             comuneRepository.saveAll(comuniValidi);
-            System.out.println("✅ Comuni salvati: " + comuniValidi.size());
-            System.out.println("⚠️  Righe scartate: " + righeScartate);
+            System.out.println("Comuni salvati: " + comuniValidi.size());
+            System.out.println("Righe scartate: " + righeScartate);
 
         } catch (IOException e) {
             e.printStackTrace();
