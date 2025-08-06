@@ -74,7 +74,7 @@ public class FatturaService {
     }
 
     public Page<Fattura> filterByStato(String statoNome, Pageable pageable) {
-        return fatturaRepository.findByStatoFatturaNome(statoNome, pageable);
+        return fatturaRepository.findByStatoFatturaStato(statoNome, pageable);
     }
 
     public Page<Fattura> filterByData(LocalDate data, Pageable pageable) {
