@@ -1,7 +1,10 @@
- package TeamOne.BW_ENERGIA.runners;
+package TeamOne.BW_ENERGIA.runners;
 
 import TeamOne.BW_ENERGIA.entities.*;
 import TeamOne.BW_ENERGIA.enums.Tipo;
+import TeamOne.BW_ENERGIA.repositories.ComuneRepository;
+import TeamOne.BW_ENERGIA.repositories.ProvinciaRepository;
+import TeamOne.BW_ENERGIA.repositories.StatoFatturaRepository;
 import TeamOne.BW_ENERGIA.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -29,14 +32,16 @@ public class RecordDbRunner implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private TeamOne.BW_ENERGIA.repositories.ComuneRepository comuneRepository;
+    private ComuneRepository comuneRepository;
     @Autowired
-    private TeamOne.BW_ENERGIA.repositories.StatoFatturaRepository statoFatturaRepository;
+    private ProvinciaRepository provinciaRepository;
+    @Autowired
+    private StatoFatturaRepository statoFatturaRepository;
 
     @Override
     public void run(String... args) throws Exception {
         // Popola Ruoli
-        if (ruoloService.findAll().isEmpty()) {
+        if (ruoloService.ruoloRepository.findAll().isEmpty()) {
             Ruolo ruolo = new Ruolo();
             ruolo.setRuolo("UTENTE");
             ruoloService.ruoloRepository.save(ruolo);
@@ -58,26 +63,33 @@ public class RecordDbRunner implements CommandLineRunner {
         }
 
         // Popola Indirizzi
-        if (indirizzoService.findAll(Pageable.unpaged()).isEmpty()) {
-            Comune comune = comuneRepository.findAll().stream().findFirst().orElse(null);
-            if (comune == null) {
-                comune = new Comune();
-                comune.setNome("ComuneTest");
-                // Imposta anche la provincia se necessario
+        Comune comune = comuneRepository.findAll().stream().findFirst().orElse(null);
+        if (comune == null) {
+            Provincia provincia = provinciaRepository.findAll().stream().findFirst().orElse(null);
+            if (provincia == null) {
+                provincia = new Provincia();
+                provincia.setNome("ProvinciaTest");
+                provincia.setSigla("PT");
+                provincia.setRegione("RegioneTest");
+                provincia = provinciaRepository.save(provincia);
             }
-            Indirizzo indirizzo = new Indirizzo();
-            indirizzo.setVia("Via Roma");
-            indirizzo.setCivico(1);
-            indirizzo.setLocalita("Centro");
-            indirizzo.setComune(comune);
-            indirizzoService.save(indirizzo);
-            System.out.println("Indirizzo di test creato");
+            comune = new Comune();
+            comune.setNome("ComuneTest");
+            comune.setProvincia(provincia);
+            comune = comuneRepository.save(comune);
         }
+        Indirizzo indirizzo = new Indirizzo();
+        indirizzo.setVia("Via Roma");
+        indirizzo.setCivico(1);
+        indirizzo.setLocalita("Centro");
+        indirizzo.setComune(comune);
+        indirizzoService.save(indirizzo);
+        System.out.println("Indirizzo di test creato");
 
         // Popola Clienti
-        if (clienteService.findAll(Pageable.unpaged()).isEmpty()) {
+        if (clienteService.findAll(Pageable.unpaged()).getContent().isEmpty()) {
             List<Indirizzo> indirizzi = indirizzoService.findAll(Pageable.unpaged()).getContent();
-            Indirizzo indirizzo = indirizzi.get(0);
+            Indirizzo indirizzoCliente = indirizzi.get(0);
             Cliente cliente = new Cliente();
             cliente.setRagioneSociale("Azienda Srl");
             cliente.setPartitaIva(123456789);
@@ -93,8 +105,8 @@ public class RecordDbRunner implements CommandLineRunner {
             cliente.setTelefonoContatto(987654321);
             cliente.setLogoAziendale("logo.png");
             cliente.setTipo(Tipo.SRL);
-            cliente.setIndirizzoSedeOp(indirizzo);
-            cliente.setIndirizzoLegale(indirizzo);
+            cliente.setIndirizzoSedeOp(indirizzoCliente);
+            cliente.setIndirizzoLegale(indirizzoCliente);
             clienteService.save(cliente);
             System.out.println("Cliente di test creato");
         }
