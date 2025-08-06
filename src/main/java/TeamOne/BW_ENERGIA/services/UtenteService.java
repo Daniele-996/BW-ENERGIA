@@ -17,7 +17,7 @@ import java.util.Optional;
 public class UtenteService {
 
     @Autowired
-    private static UtenteRepository utenteRepository;
+    private UtenteRepository utenteRepository;
 
     @Autowired
     private Cloudinary imgUploader;
@@ -40,7 +40,7 @@ public class UtenteService {
                 ));
     }
 
-    public static List<Utente> findAll() { return utenteRepository.findAll();
+    public List<Utente> findAll() { return utenteRepository.findAll();
     }
 
     public Optional<Utente> findById(Long id) {
