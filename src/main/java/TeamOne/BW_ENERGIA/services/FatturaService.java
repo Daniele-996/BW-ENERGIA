@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 public class FatturaService {
     @Autowired
-    private FatturaRepository fatturaRepository;
+    public FatturaRepository fatturaRepository;
     @Autowired
     private ClienteRepository clienteRepository;
     @Autowired
