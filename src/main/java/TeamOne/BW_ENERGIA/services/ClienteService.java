@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,5 +56,21 @@ public class ClienteService {
                             return mappa;
                         }
                 ));
+    }
+
+    public Page<Cliente> filterByFatturato(int min, int max, Pageable pageable) {
+        return clienteRepository.findByFatturatoAnnualeBetween(min, max, pageable);
+    }
+
+    public Page<Cliente> filterByDataInserimento(LocalDate data, Pageable pageable) {
+        return clienteRepository.findByDataInserimento(data, pageable);
+    }
+
+    public Page<Cliente> filterByDataUltimoContatto(LocalDate data, Pageable pageable) {
+        return clienteRepository.findByDataUltimoContatto(data, pageable);
+    }
+
+    public Page<Cliente> filterByNome(String nome, Pageable pageable) {
+        return clienteRepository.findByRagioneSocialeContainingIgnoreCase(nome, pageable);
     }
 }

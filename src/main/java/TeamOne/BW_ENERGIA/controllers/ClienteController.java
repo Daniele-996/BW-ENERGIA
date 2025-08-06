@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping("/api/clienti")
 public class ClienteController {
@@ -54,5 +56,40 @@ public class ClienteController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    // Filtri per ricerca
+//    GET /api/clienti?sort=ragioneSociale,asc
+//    GET /api/clienti?sort=fatturatoAnnuale,desc
+//    GET /api/clienti?sort=dataInserimento,asc
+//    GET /api/clienti?sort=indirizzoLegale.provincia,asc
+    @GetMapping("/search")
+    public Page<Cliente> searchClienti(
+            @RequestParam(required = false) Integer fatturatoMin,
+            @RequestParam(required = false) Integer fatturatoMax,
+            @RequestParam(required = false) String dataInserimento,
+            @RequestParam(required = false) String dataUltimoContatto,
+            @RequestParam(required = false) String nome,
+            Pageable pageable
+    ) {
+        if (fatturatoMin != null && fatturatoMax != null) {
+            return clienteService.filterByFatturato(fatturatoMin, fatturatoMax, pageable);
+        }
+
+        if (dataInserimento != null) {
+            LocalDate data = LocalDate.parse(dataInserimento);
+            return clienteService.filterByDataInserimento(data, pageable);
+        }
+
+        if (dataUltimoContatto != null) {
+            LocalDate data = LocalDate.parse(dataUltimoContatto);
+            return clienteService.filterByDataUltimoContatto(data, pageable);
+        }
+
+        if (nome != null) {
+            return clienteService.filterByNome(nome, pageable);
+        }
+
+        return clienteService.findAll(pageable);
     }
 }
