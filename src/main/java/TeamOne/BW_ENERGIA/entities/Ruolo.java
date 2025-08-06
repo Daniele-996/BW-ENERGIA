@@ -22,4 +22,8 @@ public class Ruolo {
 
     @ManyToMany(mappedBy = "ruoli")
     private List<Utente> utenti = new ArrayList<>();
+
+    public Ruolo(String ruolo) {
+        this.ruolo = ruolo;
+    }
 }

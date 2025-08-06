@@ -13,7 +13,12 @@ public class RuoloService {
     @Autowired
     private RuoloRepository ruoloRepository;
 
+
     public Optional<Ruolo> findById(Long id) {
         return ruoloRepository.findById(id);
+    }
+
+    public Ruolo save(Ruolo ruolo) {
+        return ruoloRepository.save(ruolo);
     }
 }

@@ -10,5 +10,4 @@ public class BwEnergiaApplication {
         SpringApplication.run(BwEnergiaApplication.class, args);
         System.out.println("Applicazione avviata con successo!");
     }
-
 }
