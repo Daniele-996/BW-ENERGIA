@@ -12,7 +12,7 @@ import java.util.Optional;
 public class RuoloService {
 
     @Autowired
-    private RuoloRepository ruoloRepository;
+    public RuoloRepository ruoloRepository;
 
     public Optional<Ruolo> findById(Long id) {
         return ruoloRepository.findById(id);
