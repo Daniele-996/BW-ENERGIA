@@ -10,16 +10,8 @@ public class BwEnergiaApplication {
         SpringApplication.run(BwEnergiaApplication.class, args);
         System.out.println("Applicazione avviata con successo!");
 
-
-       /* Utente utente = new Utente();
-        utente.setUsername();
-        utente.setEmail();
-        utente.setPassword();
-        utente.setNome();
-        utente.setCognome();
-        utente.setAvatar();
-        utente.setRuolo(Ruolo.ADMIN);
-        */
+        String URL = "src/main/java/TeamOne/BW_ENERGIA/csv/comuni-italiani.csv";
+        importCsvData(URL);
     }
 
 }

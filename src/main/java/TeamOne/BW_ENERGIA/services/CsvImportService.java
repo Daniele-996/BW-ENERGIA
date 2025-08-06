@@ -20,6 +20,6 @@ public class CsvImportService {
                 .withType(Comune.class)
                 .build()
                 .parse();
-        comuneRepository.saveAll(comuni);
+        System.out.println(comuni);
     }
 }
