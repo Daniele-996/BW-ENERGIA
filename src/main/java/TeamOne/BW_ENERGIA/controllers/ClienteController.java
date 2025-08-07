@@ -6,7 +6,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -17,53 +17,45 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
-    // Paginazione
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public Page<Cliente> getAll(Pageable pageable) {
         return clienteService.findAll(pageable);
     }
 
-    // Dettaglio cliente
     @GetMapping("/{id}")
-    public ResponseEntity<Cliente> getById(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public Cliente getById(@PathVariable Long id) {
         return clienteService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new RuntimeException("Cliente non trovato"));
     }
 
-    // Aggiungi cliente
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Cliente create(@RequestBody Cliente cliente) {
         return clienteService.save(cliente);
     }
 
-    // Modifica cliente
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> update(@PathVariable Long id, @RequestBody Cliente cliente) {
-        return clienteService.findById(id)
-                .map(existing -> {
-                    BeanUtils.copyProperties(cliente, existing, "id", "fatture");
-                    return ResponseEntity.ok(clienteService.save(existing));
-                })
-                .orElse(ResponseEntity.notFound().build());
+    @ResponseStatus(HttpStatus.OK)
+    public Cliente update(@PathVariable Long id, @RequestBody Cliente cliente) {
+        Cliente existing = clienteService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cliente non trovato"));
+        BeanUtils.copyProperties(cliente, existing, "id", "fatture");
+        return clienteService.save(existing);
     }
 
-    // Elimina cliente
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (clienteService.findById(id).isPresent()) {
-            clienteService.deleteById(id);
-            return ResponseEntity.noContent().build();
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        if (!clienteService.findById(id).isPresent()) {
+            throw new RuntimeException("Cliente non trovato");
         }
-        return ResponseEntity.notFound().build();
+        clienteService.deleteById(id);
     }
 
-    // Filtri per ricerca
-//    GET /api/clienti?sort=ragioneSociale,asc
-//    GET /api/clienti?sort=fatturatoAnnuale,desc
-//    GET /api/clienti?sort=dataInserimento,asc
-//    GET /api/clienti?sort=indirizzoLegale.provincia,asc
     @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
     public Page<Cliente> searchClienti(
             @RequestParam(required = false) Integer fatturatoMin,
             @RequestParam(required = false) Integer fatturatoMax,
