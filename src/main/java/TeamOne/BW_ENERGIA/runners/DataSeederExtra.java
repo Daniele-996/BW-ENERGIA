@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -49,7 +50,7 @@ public class DataSeederExtra implements CommandLineRunner {
                 || !clienteService.findAll(Pageable.unpaged()).getContent().isEmpty();
 
 
-        if (dbPopolato) {
+        /*if (dbPopolato) {
             System.out.println("Database già popolato, seeder non eseguito.");
             return;
         }
@@ -92,7 +93,7 @@ public class DataSeederExtra implements CommandLineRunner {
         utenteService.save(utente3);
         utenteService.save(utente4);
         utenteService.save(utente5);
-
+        */
         // Seeder Province
         Provincia provincia1 = provinciaRepository.findByNome("Roma")
                 .orElseThrow(() -> new RuntimeException("Provincia 'Roma' non trovata"));

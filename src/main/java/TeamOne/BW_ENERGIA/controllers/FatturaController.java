@@ -26,7 +26,6 @@ public class FatturaController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isAuthenticated()")
     public Page<Fattura> getAll(@RequestParam(defaultValue = "0") int page,
                                 @RequestParam(defaultValue = "15") int size,
                                 @RequestParam(defaultValue = "id") String sortBy) {
@@ -35,7 +34,6 @@ public class FatturaController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isAuthenticated()")
     public Fattura getById(@PathVariable Long id) {
         return fatturaService.findById(id);
     }

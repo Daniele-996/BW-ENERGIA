@@ -5,6 +5,7 @@ import TeamOne.BW_ENERGIA.entities.Provincia;
 import TeamOne.BW_ENERGIA.repositories.ComuneRepository;
 import TeamOne.BW_ENERGIA.repositories.ProvinciaRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.File;
