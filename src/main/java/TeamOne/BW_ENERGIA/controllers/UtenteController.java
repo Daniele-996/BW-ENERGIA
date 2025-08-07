@@ -1,12 +1,12 @@
 package TeamOne.BW_ENERGIA.controllers;
 
+import TeamOne.BW_ENERGIA.entities.Ruolo;
 import TeamOne.BW_ENERGIA.entities.Utente;
 import TeamOne.BW_ENERGIA.payloads.UtenteDTO;
 import TeamOne.BW_ENERGIA.services.UtenteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
