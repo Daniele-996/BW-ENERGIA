@@ -5,7 +5,6 @@ import TeamOne.BW_ENERGIA.entities.Provincia;
 import TeamOne.BW_ENERGIA.repositories.ComuneRepository;
 import TeamOne.BW_ENERGIA.repositories.ProvinciaRepository;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Component
+//@Component
 public class DataSeederComuniProvince implements CommandLineRunner {
 
     private final ProvinciaRepository provinciaRepository;
