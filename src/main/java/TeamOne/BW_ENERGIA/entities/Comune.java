@@ -23,4 +23,6 @@ public class Comune {
     @ManyToOne
     @JoinColumn(name = "provincia_id")
     private Provincia provincia;
+
+
 }

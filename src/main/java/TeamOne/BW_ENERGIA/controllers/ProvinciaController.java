@@ -3,7 +3,7 @@ package TeamOne.BW_ENERGIA.controllers;
 import TeamOne.BW_ENERGIA.payloads.ProvinciaDTO;
 import TeamOne.BW_ENERGIA.services.ProvinciaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,35 +16,36 @@ public class ProvinciaController {
     private ProvinciaService provinciaService;
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<ProvinciaDTO> getAll() {
         return provinciaService.getAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProvinciaDTO> getById(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public ProvinciaDTO getById(@PathVariable Long id) {
         return provinciaService.getById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new RuntimeException("Provincia non trovata"));
     }
 
     @PostMapping
-    public ResponseEntity<ProvinciaDTO> create(@RequestBody ProvinciaDTO dto) {
-        ProvinciaDTO created = provinciaService.create(dto);
-        return ResponseEntity.ok(created);
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProvinciaDTO create(@RequestBody ProvinciaDTO dto) {
+        return provinciaService.create(dto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProvinciaDTO> update(@PathVariable Long id, @RequestBody ProvinciaDTO dto) {
+    @ResponseStatus(HttpStatus.OK)
+    public ProvinciaDTO update(@PathVariable Long id, @RequestBody ProvinciaDTO dto) {
         return provinciaService.update(id, dto)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new RuntimeException("Provincia non trovata"));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (provinciaService.delete(id)) {
-            return ResponseEntity.noContent().build();
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        if (!provinciaService.delete(id)) {
+            throw new RuntimeException("Provincia non trovata");
         }
-        return ResponseEntity.notFound().build();
     }
 }
