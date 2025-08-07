@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -19,12 +20,14 @@ public class ClienteController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isAuthenticated()")
     public Page<Cliente> getAll(Pageable pageable) {
         return clienteService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isAuthenticated()")
     public Cliente getById(@PathVariable Long id) {
         return clienteService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente non trovato"));
@@ -32,12 +35,14 @@ public class ClienteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')")
     public Cliente create(@RequestBody Cliente cliente) {
         return clienteService.save(cliente);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ADMIN')")
     public Cliente update(@PathVariable Long id, @RequestBody Cliente cliente) {
         Cliente existing = clienteService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente non trovato"));
@@ -47,6 +52,7 @@ public class ClienteController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(@PathVariable Long id) {
         if (!clienteService.findById(id).isPresent()) {
             throw new RuntimeException("Cliente non trovato");
@@ -56,6 +62,7 @@ public class ClienteController {
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isAuthenticated()")
     public Page<Cliente> searchClienti(
             @RequestParam(required = false) Integer fatturatoMin,
             @RequestParam(required = false) Integer fatturatoMax,
