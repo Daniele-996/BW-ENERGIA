@@ -2,10 +2,12 @@ package TeamOne.BW_ENERGIA.controllers;
 
 import TeamOne.BW_ENERGIA.entities.Cliente;
 import TeamOne.BW_ENERGIA.services.ClienteService;
+import TeamOne.BW_ENERGIA.specifications.ClienteSpecifications;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -74,25 +76,24 @@ public class ClienteController {
             @RequestParam(required = false) String nome,
             Pageable pageable
     ) {
-        if (fatturatoMin != null && fatturatoMax != null) {
-            return clienteService.filterByFatturato(fatturatoMin, fatturatoMax, pageable);
-        }
+        Specification<Cliente> spec = null;
 
+        if (fatturatoMin != null && fatturatoMax != null) {
+            spec = ClienteSpecifications.fatturatoBetween(fatturatoMin, fatturatoMax);
+        }
         if (dataInserimento != null) {
             LocalDate data = LocalDate.parse(dataInserimento);
-            return clienteService.filterByDataInserimento(data, pageable);
+            spec = (spec == null ? ClienteSpecifications.dataInserimentoEquals(data) : spec.and(ClienteSpecifications.dataInserimentoEquals(data)));
         }
-
         if (dataUltimoContatto != null) {
             LocalDate data = LocalDate.parse(dataUltimoContatto);
-            return clienteService.filterByDataUltimoContatto(data, pageable);
+            spec = (spec == null ? ClienteSpecifications.dataUltimoContattoEquals(data) : spec.and(ClienteSpecifications.dataUltimoContattoEquals(data)));
         }
-
         if (nome != null) {
-            return clienteService.filterByNome(nome, pageable);
+            spec = (spec == null ? ClienteSpecifications.nomeContains(nome) : spec.and(ClienteSpecifications.nomeContains(nome)));
         }
 
-        return clienteService.findAll(pageable);
+        return clienteService.findAllFilter(spec, pageable);
     }
 
     @PatchMapping("/{id}")

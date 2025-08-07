@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -120,6 +121,10 @@ public class FatturaService {
         });
 
         return fatturaRepository.save(fattura);
+    }
+
+    public Page<Fattura> findAllFilter(Specification<Fattura> spec, Pageable pageable) {
+        return fatturaRepository.findAll(spec, pageable);
     }
 
 }

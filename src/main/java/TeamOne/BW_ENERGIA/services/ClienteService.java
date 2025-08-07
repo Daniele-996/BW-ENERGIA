@@ -5,6 +5,7 @@ import TeamOne.BW_ENERGIA.repositories.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -72,5 +73,9 @@ public class ClienteService {
 
     public Page<Cliente> filterByNome(String nome, Pageable pageable) {
         return clienteRepository.findByRagioneSocialeContainingIgnoreCase(nome, pageable);
+    }
+
+    public Page<Cliente> findAllFilter(Specification<Cliente> spec, Pageable pageable) {
+        return clienteRepository.findAll(spec, pageable);
     }
 }
