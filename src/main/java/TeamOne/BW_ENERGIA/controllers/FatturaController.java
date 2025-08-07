@@ -111,6 +111,7 @@ public class FatturaController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ADMIN')")
     public Fattura patchFattura(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return fatturaService.patchFattura(id, updates);
     }

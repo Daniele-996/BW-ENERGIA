@@ -107,6 +107,7 @@ public class ClienteController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ADMIN')")
     public Cliente patchCliente(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return clienteService.findById(id)
                 .map(cliente -> {

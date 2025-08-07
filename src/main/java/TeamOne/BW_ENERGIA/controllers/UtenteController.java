@@ -89,6 +89,7 @@ public class UtenteController {
 
     @PatchMapping("/{id}/ruoli")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ADMIN')")
     public Utente updateRuoli(
             @PathVariable Long id,
             @RequestBody List<Long> idRuoli) {
