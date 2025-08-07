@@ -7,6 +7,7 @@ import TeamOne.BW_ENERGIA.services.UtenteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,12 +27,14 @@ public class UtenteController {
     //TODO:Renderlo pagebla
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isAuthenticated()")
     public List<Utente> getAll() {
         return utenteService.findAll();
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isAuthenticated()")
     public Utente getById(@PathVariable Long id) {
         return utenteService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Utente non trovato"));
@@ -39,6 +42,7 @@ public class UtenteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')")
     public Utente create(@RequestBody @Valid UtenteDTO dto) {
         if (utenteService.existsByEmail(dto.email()) || utenteService.existsByUsername(dto.username())) {
             throw new RuntimeException("Email o username già esistenti");
@@ -54,6 +58,7 @@ public class UtenteController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ADMIN')")
     public Utente update(@PathVariable Long id, @RequestBody @Valid UtenteDTO dto) {
         Utente existing = utenteService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Utente non trovato"));
@@ -67,6 +72,7 @@ public class UtenteController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(@PathVariable Long id) {
         if (!utenteService.findById(id).isPresent()) {
             throw new RuntimeException("Utente non trovato");
@@ -76,6 +82,7 @@ public class UtenteController {
 
     @PatchMapping("/{userId}/avatar")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ADMIN')")
     public String uploadImage(@RequestParam("avatar") MultipartFile file) {
         return this.utenteService.uploadAvatar(file);
     }

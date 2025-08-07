@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -25,6 +26,7 @@ public class ClienteController {
     // Paginazione
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isAuthenticated()")
     public Page<Cliente> getAll(Pageable pageable) {
         return clienteService.findAll(pageable);
     }
@@ -32,6 +34,7 @@ public class ClienteController {
     // Dettaglio cliente
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isAuthenticated()")
     public Cliente getById(@PathVariable Long id) {
         return clienteService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente non trovato"));
@@ -40,6 +43,7 @@ public class ClienteController {
     // Aggiungi cliente
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')")
     public Cliente create(@RequestBody Cliente cliente) {
         return clienteService.save(cliente);
     }
@@ -47,6 +51,7 @@ public class ClienteController {
     // Modifica cliente
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ADMIN')")
     public Cliente update(@PathVariable Long id, @RequestBody Cliente cliente) {
         Cliente existing = clienteService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente non trovato"));
@@ -57,6 +62,7 @@ public class ClienteController {
     // Elimina cliente
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(@PathVariable Long id) {
         if (!clienteService.findById(id).isPresent()) {
             throw new RuntimeException("Cliente non trovato");
@@ -71,6 +77,7 @@ public class ClienteController {
     //GET /api/clienti?sort=indirizzoLegale.provincia,asc
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isAuthenticated()")
     public Page<Cliente> searchClienti(
             @RequestParam(required = false) Integer fatturatoMin,
             @RequestParam(required = false) Integer fatturatoMax,
@@ -84,6 +91,7 @@ public class ClienteController {
         if (fatturatoMin != null && fatturatoMax != null) {
             spec = ClienteSpecifications.fatturatoBetween(fatturatoMin, fatturatoMax);
         }
+
         if (dataInserimento != null) {
             LocalDate data = LocalDate.parse(dataInserimento);
             spec = (spec == null ? ClienteSpecifications.dataInserimentoEquals(data) : spec.and(ClienteSpecifications.dataInserimentoEquals(data)));
