@@ -1,6 +1,5 @@
 package TeamOne.BW_ENERGIA.controllers;
 
-import TeamOne.BW_ENERGIA.entities.Ruolo;
 import TeamOne.BW_ENERGIA.entities.Utente;
 import TeamOne.BW_ENERGIA.payloads.UtenteDTO;
 import TeamOne.BW_ENERGIA.services.UtenteService;
@@ -24,65 +23,60 @@ public class UtenteController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    //Renderlo pagebla
+    //TODO:Renderlo pagebla
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<Utente> getAll() {
         return utenteService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Utente> getById(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public Utente getById(@PathVariable Long id) {
         return utenteService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
     }
 
     @PostMapping
-    public ResponseEntity<Utente> create(@RequestBody @Valid UtenteDTO dto) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Utente create(@RequestBody @Valid UtenteDTO dto) {
         if (utenteService.existsByEmail(dto.email()) || utenteService.existsByUsername(dto.username())) {
-            return ResponseEntity.badRequest().build();
+            throw new RuntimeException("Email o username già esistenti");
         }
-
         Utente utente = new Utente();
         utente.setUsername(dto.username());
         utente.setEmail(dto.email());
         utente.setPassword(passwordEncoder.encode(dto.password()));
         utente.setNome(dto.nome());
         utente.setCognome(dto.cognome());
-
-        return ResponseEntity.ok(utenteService.save(utente));
+        return utenteService.save(utente);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Utente> update(@PathVariable Long id, @RequestBody @Valid UtenteDTO dto) {
-        return utenteService.findById(id)
-                .map(existing -> {
-                    existing.setUsername(dto.username());
-                    existing.setEmail(dto.email());
-                    existing.setPassword(passwordEncoder.encode(dto.password()));
-                    existing.setNome(dto.nome());
-                    existing.setCognome(dto.cognome());
-                    // existing.setAvatar(dto.avatar());
-                    // existing.setRuoli(dto.idRuoli());
-                    return ResponseEntity.ok(utenteService.save(existing));
-                })
-                .orElse(ResponseEntity.notFound().build());
+    @ResponseStatus(HttpStatus.OK)
+    public Utente update(@PathVariable Long id, @RequestBody @Valid UtenteDTO dto) {
+        Utente existing = utenteService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+        existing.setUsername(dto.username());
+        existing.setEmail(dto.email());
+        existing.setPassword(passwordEncoder.encode(dto.password()));
+        existing.setNome(dto.nome());
+        existing.setCognome(dto.cognome());
+        return utenteService.save(existing);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
         if (!utenteService.findById(id).isPresent()) {
-            return ResponseEntity.notFound().build();
+            throw new RuntimeException("Utente non trovato");
         }
         utenteService.delete(id);
-        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{userId}/avatar")
     @ResponseStatus(HttpStatus.OK)
     public String uploadImage(@RequestParam("avatar") MultipartFile file) {
-        System.out.println(file.getOriginalFilename());
-        System.out.println(file.getSize());
         return this.utenteService.uploadAvatar(file);
     }
 
