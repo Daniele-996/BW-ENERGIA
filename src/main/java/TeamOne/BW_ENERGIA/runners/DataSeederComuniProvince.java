@@ -17,12 +17,12 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
-public class DataSeederRunner implements CommandLineRunner {
+public class DataSeederComuniProvince implements CommandLineRunner {
 
     private final ProvinciaRepository provinciaRepository;
     private final ComuneRepository comuneRepository;
 
-    public DataSeederRunner(ComuneRepository comuneRepository, ProvinciaRepository provinciaRepository) {
+    public DataSeederComuniProvince(ComuneRepository comuneRepository, ProvinciaRepository provinciaRepository) {
         this.provinciaRepository = provinciaRepository;
         this.comuneRepository = comuneRepository;
     }
