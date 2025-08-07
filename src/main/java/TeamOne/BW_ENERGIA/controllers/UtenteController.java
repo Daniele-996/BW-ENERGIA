@@ -1,5 +1,6 @@
 package TeamOne.BW_ENERGIA.controllers;
 
+import TeamOne.BW_ENERGIA.entities.Ruolo;
 import TeamOne.BW_ENERGIA.entities.Utente;
 import TeamOne.BW_ENERGIA.payloads.UtenteDTO;
 import TeamOne.BW_ENERGIA.services.UtenteService;
