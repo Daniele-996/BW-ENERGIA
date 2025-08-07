@@ -6,10 +6,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/clienti")
@@ -59,10 +61,10 @@ public class ClienteController {
     }
 
     // Filtri per ricerca
-//    GET /api/clienti?sort=ragioneSociale,asc
-//    GET /api/clienti?sort=fatturatoAnnuale,desc
-//    GET /api/clienti?sort=dataInserimento,asc
-//    GET /api/clienti?sort=indirizzoLegale.provincia,asc
+    //GET /api/clienti?sort=ragioneSociale,asc
+    //GET /api/clienti?sort=fatturatoAnnuale,desc
+    //GET /api/clienti?sort=dataInserimento,asc
+    //GET /api/clienti?sort=indirizzoLegale.provincia,asc
     @GetMapping("/search")
     public Page<Cliente> searchClienti(
             @RequestParam(required = false) Integer fatturatoMin,
@@ -91,5 +93,32 @@ public class ClienteController {
         }
 
         return clienteService.findAll(pageable);
+    }
+
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Cliente patchCliente(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        return clienteService.findById(id)
+                .map(cliente -> {
+                    updates.forEach((key, value) -> {
+                        switch (key) {
+                            case "ragioneSociale" -> cliente.setRagioneSociale((String) value);
+                            case "partitaIva" -> cliente.setPartitaIva((Integer) value);
+                            case "email" -> cliente.setEmail((String) value);
+                            case "dataInserimento" -> cliente.setDataInserimento(LocalDate.parse((String) value));
+                            case "dataUltimoContatto" -> cliente.setDataUltimoContatto(LocalDate.parse((String) value));
+                            case "fatturatoAnnuale" -> cliente.setFatturatoAnnuale((Integer) value);
+                            case "pec" -> cliente.setPec((String) value);
+                            case "telefono" -> cliente.setTelefono((Integer) value);
+                            case "emailContatto" -> cliente.setEmailContatto((String) value);
+                            case "nomeContatto" -> cliente.setNomeContatto((String) value);
+                            case "cognomeContatto" -> cliente.setCognomeContatto((String) value);
+                            case "telefonoContatto" -> cliente.setTelefonoContatto((Integer) value);
+                            case "logoAziendale" -> cliente.setLogoAziendale((String) value);
+                        }
+                    });
+                    return clienteService.save(cliente);
+                })
+                .orElseThrow(() -> new RuntimeException("Cliente non trovato"));
     }
 }

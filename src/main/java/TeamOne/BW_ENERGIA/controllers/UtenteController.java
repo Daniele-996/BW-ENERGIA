@@ -1,10 +1,12 @@
 package TeamOne.BW_ENERGIA.controllers;
 
+import TeamOne.BW_ENERGIA.entities.Ruolo;
 import TeamOne.BW_ENERGIA.entities.Utente;
 import TeamOne.BW_ENERGIA.payloads.UtenteDTO;
 import TeamOne.BW_ENERGIA.services.UtenteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,7 @@ public class UtenteController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    //Renderlo pagebla
     @GetMapping
     public List<Utente> getAll() {
         return utenteService.findAll();
@@ -46,8 +49,6 @@ public class UtenteController {
         utente.setPassword(passwordEncoder.encode(dto.password()));
         utente.setNome(dto.nome());
         utente.setCognome(dto.cognome());
-        // utente.setAvatar(dto.avatar());
-        // utente.setRuoli(dto.idRuoli());
 
         return ResponseEntity.ok(utenteService.save(utente));
     }
@@ -78,10 +79,24 @@ public class UtenteController {
     }
 
     @PatchMapping("/{userId}/avatar")
+    @ResponseStatus(HttpStatus.OK)
     public String uploadImage(@RequestParam("avatar") MultipartFile file) {
         System.out.println(file.getOriginalFilename());
         System.out.println(file.getSize());
         return this.utenteService.uploadAvatar(file);
+    }
 
+    @PatchMapping("/{id}/ruoli")
+    @ResponseStatus(HttpStatus.OK)
+    public Utente updateRuoli(
+            @PathVariable Long id,
+            @RequestBody List<Long> idRuoli) {
+        return utenteService.findById(id)
+                .map(utente -> {
+                    List<Ruolo> nuoviRuoli = utenteService.getRuoliByIds(idRuoli);
+                    utente.setRuoli(nuoviRuoli);
+                    return utenteService.save(utente);
+                })
+                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
     }
 }

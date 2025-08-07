@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/fatture")
@@ -53,17 +54,17 @@ public class FatturaController {
     }
 
 
-    // Ricerca e filtro
-//   GET /api/fatture/search?clienteId=5
-//   GET /api/fatture/search?statoFattura=Pagata
-//   GET /api/fatture/search?data=2025-08-01
-//   GET /api/fatture/search?anno=2025
-//   GET /api/fatture/search?importoMin=100&importoMax=500
+    //Ricerca e filtro
+    //GET /api/fatture/search?clienteId=5
+    //GET /api/fatture/search?statoFattura=Pagata
+    //GET /api/fatture/search?data=2025-08-01
+    //GET /api/fatture/search?anno=2025
+    //GET /api/fatture/search?importoMin=100&importoMax=500
     @GetMapping("/search")
     public Page<Fattura> searchFatture(
             @RequestParam(required = false) Long clienteId,
             @RequestParam(required = false) String statoFattura,
-            @RequestParam(required = false) String data, // formato: yyyy-MM-dd
+            @RequestParam(required = false) String data,
             @RequestParam(required = false) Integer anno,
             @RequestParam(required = false) Integer importoMin,
             @RequestParam(required = false) Integer importoMax,
@@ -95,5 +96,11 @@ public class FatturaController {
         }
 
         return fatturaService.findAll(page, size, sortBy);
+    }
+
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Fattura patchFattura(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        return fatturaService.patchFattura(id, updates);
     }
 }

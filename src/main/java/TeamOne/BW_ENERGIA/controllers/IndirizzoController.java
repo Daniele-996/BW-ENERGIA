@@ -22,7 +22,6 @@ public class IndirizzoController {
         return indirizzoService.findAll(pageable);
     }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<Indirizzo> getById(@PathVariable Long id) {
         return indirizzoService.findById(id)
@@ -30,12 +29,10 @@ public class IndirizzoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-
     @PostMapping
     public Indirizzo create(@RequestBody Indirizzo indirizzo) {
         return indirizzoService.save(indirizzo);
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<Indirizzo> update(@PathVariable Long id, @RequestBody @Valid IndirizzoDTO dto) {
@@ -50,7 +47,6 @@ public class IndirizzoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         if (indirizzoService.findById(id).isPresent()) {
@@ -59,5 +55,5 @@ public class IndirizzoController {
         }
         return ResponseEntity.notFound().build();
     }
-    
+
 }
