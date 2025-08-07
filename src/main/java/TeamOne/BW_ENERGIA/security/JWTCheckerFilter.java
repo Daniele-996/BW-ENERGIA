@@ -29,7 +29,8 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
     private UtenteService utenteService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -41,14 +42,21 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
         jwtTools.verifyToken(accessToken);
 
         String utenteId = jwtTools.extractIdFromToken(accessToken);
-        Optional<Utente> currentUtente = this.utenteService.findById(Long.valueOf(utenteId));
+        Optional<Utente> currentUtente = utenteService.findById(Long.valueOf(utenteId));
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(currentUtente, null, currentUtente.get().getAuthorities());
+        if (currentUtente.isEmpty()) {
+            throw new UnauthorizedException("Utente non trovato.");
+        }
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                currentUtente.get(),
+                null,
+                currentUtente.get().getAuthorities()
+        );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
-
     }
 
     @Override

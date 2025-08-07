@@ -11,13 +11,14 @@ import java.util.Date;
 
 @Component
 public class JWTTools {
+
     @Value("${jwt.secret}")
     private String secret;
 
     public String createToken(Utente u) {
         return Jwts.builder()
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // 7 giorni
                 .subject(String.valueOf(u.getId()))
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
                 .compact();
@@ -25,13 +26,21 @@ public class JWTTools {
 
     public void verifyToken(String accessToken) {
         try {
-            Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secret.getBytes())).build().parse(accessToken);
+            Jwts.parser()
+                    .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                    .build()
+                    .parse(accessToken);
         } catch (Exception ex) {
-            throw new UnauthorizedException("Problemi con il token! Effettuare di nuovo il login!");
+            throw new UnauthorizedException("Token non valido o scaduto. Effettuare nuovamente il login.");
         }
     }
 
     public String extractIdFromToken(String accessToken) {
-        return Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secret.getBytes())).build().parseSignedClaims(accessToken).getPayload().getSubject();
+        return Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .build()
+                .parseSignedClaims(accessToken)
+                .getPayload()
+                .getSubject();
     }
 }
