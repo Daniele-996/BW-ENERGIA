@@ -62,4 +62,5 @@ public class IndirizzoController {
         }
         indirizzoService.deleteById(id);
     }
+
 }

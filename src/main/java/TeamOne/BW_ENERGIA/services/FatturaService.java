@@ -13,9 +13,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 @Service
 public class FatturaService {
@@ -87,6 +89,42 @@ public class FatturaService {
 
     public Page<Fattura> filterByImportoRange(int min, int max, Pageable pageable) {
         return fatturaRepository.findByImportoBetween(min, max, pageable);
+    }
+
+    public Fattura patchFattura(Long id, Map<String, Object> updates) {
+        Fattura fattura = findById(id);
+
+        updates.forEach((key, value) -> {
+            switch (key) {
+                case "importo":
+                    fattura.setImporto((Integer) value);
+                    break;
+                case "numero":
+                    fattura.setNumero((Integer) value);
+                    break;
+                case "data":
+                    fattura.setData(LocalDate.parse((String) value));
+                    break;
+                case "statoFatturaId":
+                    Long statoId = Long.valueOf(value.toString());
+                    StatoFattura stato = statoFatturaRepository.findById(statoId)
+                            .orElseThrow(() -> new NotFoundException("Stato fattura non trovato!"));
+                    fattura.setStatoFattura(stato);
+                    break;
+                case "clienteId":
+                    Long clienteId = Long.valueOf(value.toString());
+                    Cliente cliente = clienteRepository.findById(clienteId)
+                            .orElseThrow(() -> new NotFoundException("Cliente non trovato!"));
+                    fattura.setCliente(cliente);
+                    break;
+            }
+        });
+
+        return fatturaRepository.save(fattura);
+    }
+
+    public Page<Fattura> findAllFilter(Specification<Fattura> spec, Pageable pageable) {
+        return fatturaRepository.findAll(spec, pageable);
     }
 
 }

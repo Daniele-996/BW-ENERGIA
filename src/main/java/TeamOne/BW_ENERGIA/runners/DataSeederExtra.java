@@ -38,6 +38,10 @@ public class DataSeederExtra implements CommandLineRunner {
     private StatoFatturaRepository statoFatturaRepository;
     @Autowired
     private StatoFatturaService statoFatturaService;
+    @Autowired
+    private ComuneService comuneService;
+    @Autowired
+    private ProvinciaService provinciaService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -45,10 +49,12 @@ public class DataSeederExtra implements CommandLineRunner {
                 || !fatturaService.findAll(0, 15, "id").isEmpty()
                 || !clienteService.findAll(Pageable.unpaged()).getContent().isEmpty();
 
+
         if (dbPopolato) {
             System.out.println("Database già popolato, seeder non eseguito.");
             return;
         }
+
 
         // Seeder StatoFattura
         StatoFattura statoFattura1 = new StatoFattura(0, "Pagata");
@@ -89,33 +95,16 @@ public class DataSeederExtra implements CommandLineRunner {
         utenteService.save(utente5);
 
         // Seeder Province
-        Provincia provincia1 = new Provincia();
-        provincia1.setNome("ProvinciaTest");
-        provincia1.setSigla("PT");
-        provincia1.setRegione("RegioneTest");
-        provincia1 = provinciaRepository.save(provincia1);
-
-        Provincia provincia2 = new Provincia();
-        provincia2.setNome("Milano");
-        provincia2.setSigla("MI");
-        provincia2.setRegione("Lombardia");
-        provincia2 = provinciaRepository.save(provincia2);
-
-        // Seeder Comuni
-        Comune comune1 = new Comune();
-        comune1.setNome("ComuneTest");
-        comune1.setProvincia(provincia1);
-        comune1 = comuneRepository.save(comune1);
-
-        Comune comune2 = new Comune();
-        comune2.setNome("Milano");
-        comune2.setProvincia(provincia2);
-        comune2 = comuneRepository.save(comune2);
-
-        Comune comune3 = new Comune();
-        comune3.setNome("Sesto San Giovanni");
-        comune3.setProvincia(provincia2);
-        comune3 = comuneRepository.save(comune3);
+        Provincia provincia1 = provinciaRepository.findByNome("Roma")
+                .orElseThrow(() -> new RuntimeException("Provincia 'Roma' non trovata"));
+        Provincia provincia2 = provinciaRepository.findByNome("Milano")
+                .orElseThrow(() -> new RuntimeException("Provincia 'Milano' non trovata"));
+        Provincia provincia3 = provinciaRepository.findByNome("Napoli")
+                .orElseThrow(() -> new RuntimeException("Provincia 'Napoli' non trovata"));
+        //Seeder Comuni
+        Comune comune1 = comuneRepository.findByNome("Roma").orElseThrow();
+        Comune comune2 = comuneRepository.findByNome("Milano").orElseThrow();
+        Comune comune3 = comuneRepository.findByNome("Napoli").orElseThrow();
 
         // Seeder Indirizzi
         Indirizzo indirizzo1 = new Indirizzo();
@@ -138,6 +127,23 @@ public class DataSeederExtra implements CommandLineRunner {
         indirizzo3.setLocalita("Sud");
         indirizzo3.setComune(comune3);
         indirizzoService.save(indirizzo3);
+
+
+        Indirizzo indirizzo4 = new Indirizzo();
+        indirizzo4.setVia("Via delle Rose");
+        indirizzo4.setCivico(15);
+        indirizzo4.setLocalita("Sud");
+        indirizzo4.setComune(comune3);
+        indirizzoService.save(indirizzo4);
+
+
+        Indirizzo indirizzo5 = new Indirizzo();
+        indirizzo5.setVia("Via le mani dal naso");
+        indirizzo5.setCivico(29);
+        indirizzo5.setLocalita("Centro");
+        indirizzo5.setComune(comune1);
+        indirizzoService.save(indirizzo5);
+
 
         // Seeder Clienti
         Cliente cliente1 = new Cliente();
@@ -197,10 +203,51 @@ public class DataSeederExtra implements CommandLineRunner {
         cliente3.setIndirizzoLegale(indirizzo3);
         clienteService.save(cliente3);
 
+        Cliente cliente4 = new Cliente();
+        cliente4.setRagioneSociale("GEMMA SNC");
+        cliente4.setPartitaIva(555666777);
+        cliente4.setEmail("gemma@azienda.com");
+        cliente4.setDataInserimento(LocalDate.now().minusMonths(9));
+        cliente4.setDataUltimoContatto(LocalDate.now().minusDays(15));
+        cliente4.setFatturatoAnnuale(550000);
+        cliente4.setPec("pec@gemma.com");
+        cliente4.setTelefono(445665426);
+        cliente4.setEmailContatto("contatto@gemma.com");
+        cliente4.setNomeContatto("Lorenzo");
+        cliente4.setCognomeContatto("Falchi");
+        cliente4.setTelefonoContatto(321321999);
+        cliente4.setLogoAziendale("gemma_logo.png");
+        cliente4.setTipo(Tipo.SRL);
+        cliente4.setIndirizzoSedeOp(indirizzo4);
+        cliente4.setIndirizzoLegale(indirizzo4);
+        clienteService.save(cliente4);
+
+        Cliente cliente5 = new Cliente();
+        cliente5.setRagioneSociale("Astra SNC");
+        cliente5.setPartitaIva(555666777);
+        cliente5.setEmail("astra@azienda.com");
+        cliente5.setDataInserimento(LocalDate.now().minusMonths(9));
+        cliente5.setDataUltimoContatto(LocalDate.now().minusDays(15));
+        cliente5.setFatturatoAnnuale(550000);
+        cliente5.setPec("pec@astra.com");
+        cliente5.setTelefono(445665426);
+        cliente5.setEmailContatto("contatto@astra.com");
+        cliente5.setNomeContatto("Ernesto");
+        cliente5.setCognomeContatto("Corso");
+        cliente5.setTelefonoContatto(321372321);
+        cliente5.setLogoAziendale("astra_logo.png");
+        cliente5.setTipo(Tipo.SPA);
+        cliente5.setIndirizzoSedeOp(indirizzo5);
+        cliente5.setIndirizzoLegale(indirizzo5);
+        clienteService.save(cliente5);
+
         // Seeder Fatture
         StatoFattura statoFatturaDb1 = statoFatturaRepository.findAll().get(0);
         StatoFattura statoFatturaDb2 = statoFatturaRepository.findAll().get(1);
         StatoFattura statoFatturaDb3 = statoFatturaRepository.findAll().get(2);
+        StatoFattura statoFatturaDb4 = statoFatturaRepository.findAll().get(3);
+        StatoFattura statoFatturaDb5 = statoFatturaRepository.findAll().get(4);
+
 
         Fattura fattura1 = new Fattura();
         fattura1.setData(LocalDate.now());
@@ -226,6 +273,23 @@ public class DataSeederExtra implements CommandLineRunner {
         fattura3.setStatoFattura(statoFatturaDb3);
         fatturaService.fatturaRepository.save(fattura3);
 
+        Fattura fattura4 = new Fattura();
+        fattura4.setData(LocalDate.now());
+        fattura4.setImporto(500);
+        fattura4.setNumero(1);
+        fattura4.setCliente(cliente1);
+        fattura4.setStatoFattura(statoFatturaDb4);
+        fatturaService.fatturaRepository.save(fattura4);
+
+        Fattura fattura5 = new Fattura();
+        fattura5.setData(LocalDate.now().minusDays(3));
+        fattura5.setImporto(1200);
+        fattura5.setNumero(2);
+        fattura5.setCliente(cliente2);
+        fattura5.setStatoFattura(statoFatturaDb5);
+        fatturaService.fatturaRepository.save(fattura5);
+
         System.out.println("Database popolato con dati di test extra.");
+
     }
 }

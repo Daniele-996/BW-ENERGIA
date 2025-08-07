@@ -1,7 +1,9 @@
 package TeamOne.BW_ENERGIA.services;
 
+import TeamOne.BW_ENERGIA.entities.Ruolo;
 import TeamOne.BW_ENERGIA.entities.Utente;
 import TeamOne.BW_ENERGIA.exceptions.BadRequestException;
+import TeamOne.BW_ENERGIA.repositories.RuoloRepository;
 import TeamOne.BW_ENERGIA.repositories.UtenteRepository;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -21,6 +23,8 @@ public class UtenteService {
 
     @Autowired
     private Cloudinary imgUploader;
+    @Autowired
+    private RuoloRepository ruoloRepository;
 
     public Map<Object, Object> findAllMapped() {
         return utenteRepository.findAll().stream()
@@ -40,7 +44,8 @@ public class UtenteService {
                 ));
     }
 
-    public List<Utente> findAll() { return utenteRepository.findAll();
+    public List<Utente> findAll() {
+        return utenteRepository.findAll();
     }
 
     public Optional<Utente> findById(Long id) {
@@ -79,5 +84,9 @@ public class UtenteService {
         } catch (Exception e) {
             throw new BadRequestException("Ci sono stati problemi nel salvataggio del file!");
         }
+    }
+
+    public List<Ruolo> getRuoliByIds(List<Long> ids) {
+        return ruoloRepository.findAllById(ids);
     }
 }

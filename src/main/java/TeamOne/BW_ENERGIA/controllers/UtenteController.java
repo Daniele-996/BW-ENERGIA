@@ -1,5 +1,6 @@
 package TeamOne.BW_ENERGIA.controllers;
 
+import TeamOne.BW_ENERGIA.entities.Ruolo;
 import TeamOne.BW_ENERGIA.entities.Utente;
 import TeamOne.BW_ENERGIA.payloads.UtenteDTO;
 import TeamOne.BW_ENERGIA.services.UtenteService;
@@ -23,6 +24,7 @@ public class UtenteController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    //TODO:Renderlo pagebla
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isAuthenticated()")
@@ -83,5 +85,19 @@ public class UtenteController {
     @PreAuthorize("hasRole('ADMIN')")
     public String uploadImage(@RequestParam("avatar") MultipartFile file) {
         return this.utenteService.uploadAvatar(file);
+    }
+
+    @PatchMapping("/{id}/ruoli")
+    @ResponseStatus(HttpStatus.OK)
+    public Utente updateRuoli(
+            @PathVariable Long id,
+            @RequestBody List<Long> idRuoli) {
+        return utenteService.findById(id)
+                .map(utente -> {
+                    List<Ruolo> nuoviRuoli = utenteService.getRuoliByIds(idRuoli);
+                    utente.setRuoli(nuoviRuoli);
+                    return utenteService.save(utente);
+                })
+                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
     }
 }

@@ -3,17 +3,20 @@ package TeamOne.BW_ENERGIA.controllers;
 import TeamOne.BW_ENERGIA.entities.Fattura;
 import TeamOne.BW_ENERGIA.payloads.FatturaDTO;
 import TeamOne.BW_ENERGIA.services.FatturaService;
+import TeamOne.BW_ENERGIA.specifications.FatturaSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/fatture")
@@ -59,18 +62,18 @@ public class FatturaController {
     }
 
 
-    // Ricerca e filtro
-//   GET /api/fatture/search?clienteId=5
-//   GET /api/fatture/search?statoFattura=Pagata
-//   GET /api/fatture/search?data=2025-08-01
-//   GET /api/fatture/search?anno=2025
-//   GET /api/fatture/search?importoMin=100&importoMax=500
+    //Ricerca e filtro
+    //GET /api/fatture/search?clienteId=5
+    //GET /api/fatture/search?statoFattura=Pagata
+    //GET /api/fatture/search?data=2025-08-01
+    //GET /api/fatture/search?anno=2025
+    //GET /api/fatture/search?importoMin=100&importoMax=500
     @GetMapping("/search")
     @PreAuthorize("isAuthenticated()")
     public Page<Fattura> searchFatture(
             @RequestParam(required = false) Long clienteId,
             @RequestParam(required = false) String statoFattura,
-            @RequestParam(required = false) String data, // formato: yyyy-MM-dd
+            @RequestParam(required = false) String data,
             @RequestParam(required = false) Integer anno,
             @RequestParam(required = false) Integer importoMin,
             @RequestParam(required = false) Integer importoMax,
@@ -80,27 +83,35 @@ public class FatturaController {
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
 
+        Specification<Fattura> spec = null;
+
         if (clienteId != null) {
-            return fatturaService.filterByClienteId(clienteId, pageable);
+            spec = (spec == null) ? FatturaSpecifications.clienteIdEquals(clienteId) : spec.and(FatturaSpecifications.clienteIdEquals(clienteId));
         }
 
         if (statoFattura != null) {
-            return fatturaService.filterByStato(statoFattura, pageable);
+            spec = (spec == null) ? FatturaSpecifications.statoEquals(statoFattura) : spec.and(FatturaSpecifications.statoEquals(statoFattura));
         }
 
         if (data != null) {
             LocalDate parsedDate = LocalDate.parse(data);
-            return fatturaService.filterByData(parsedDate, pageable);
+            spec = (spec == null) ? FatturaSpecifications.dataEquals(parsedDate) : spec.and(FatturaSpecifications.dataEquals(parsedDate));
         }
 
         if (anno != null) {
-            return fatturaService.filterByAnno(anno, pageable);
+            spec = (spec == null) ? FatturaSpecifications.annoEquals(anno) : spec.and(FatturaSpecifications.annoEquals(anno));
         }
 
         if (importoMin != null && importoMax != null) {
-            return fatturaService.filterByImportoRange(importoMin, importoMax, pageable);
+            spec = (spec == null) ? FatturaSpecifications.importoBetween(importoMin, importoMax) : spec.and(FatturaSpecifications.importoBetween(importoMin, importoMax));
         }
 
-        return fatturaService.findAll(page, size, sortBy);
+        return fatturaService.findAllFilter(spec, pageable);
+    }
+
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Fattura patchFattura(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        return fatturaService.patchFattura(id, updates);
     }
 }
