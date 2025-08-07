@@ -7,57 +7,53 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/indirizzi")
 public class IndirizzoController {
-    @Autowired
-    IndirizzoService indirizzoService;
 
+    @Autowired
+    private IndirizzoService indirizzoService;
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public Page<Indirizzo> getAll(Pageable pageable) {
         return indirizzoService.findAll(pageable);
     }
 
-
     @GetMapping("/{id}")
-    public ResponseEntity<Indirizzo> getById(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public Indirizzo getById(@PathVariable Long id) {
         return indirizzoService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new RuntimeException("Indirizzo non trovato"));
     }
 
-
     @PostMapping
-    public Indirizzo create(@RequestBody Indirizzo indirizzo) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Indirizzo create(@RequestBody @Valid Indirizzo indirizzo) {
         return indirizzoService.save(indirizzo);
     }
 
-
     @PutMapping("/{id}")
-    public ResponseEntity<Indirizzo> update(@PathVariable Long id, @RequestBody @Valid IndirizzoDTO dto) {
-        return indirizzoService.findById(id)
-                .map(existing -> {
-                    existing.setVia(dto.via());
-                    existing.setCivico(dto.civico());
-                    existing.setLocalita(dto.localita());
-                    existing.setComune(dto.comune());
-                    return ResponseEntity.ok(indirizzoService.save(existing));
-                })
-                .orElse(ResponseEntity.notFound().build());
+    @ResponseStatus(HttpStatus.OK)
+    public Indirizzo update(@PathVariable Long id, @RequestBody @Valid IndirizzoDTO dto) {
+        Indirizzo existing = indirizzoService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Indirizzo non trovato"));
+        existing.setVia(dto.via());
+        existing.setCivico(dto.civico());
+        existing.setLocalita(dto.localita());
+        existing.setComune(dto.comune());
+        return indirizzoService.save(existing);
     }
-
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (indirizzoService.findById(id).isPresent()) {
-            indirizzoService.deleteById(id);
-            return ResponseEntity.noContent().build();
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        if (!indirizzoService.findById(id).isPresent()) {
+            throw new RuntimeException("Indirizzo non trovato");
         }
-        return ResponseEntity.notFound().build();
+        indirizzoService.deleteById(id);
     }
-    
 }
