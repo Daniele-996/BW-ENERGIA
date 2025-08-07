@@ -49,8 +49,8 @@ public class CreateRecord implements CommandLineRunner {
         Utente utente1 = new Utente(0, "Cicciogamer", "cicciogamer@libero.it", "cicciociccio", "Ciccio", "Gamer", "https://yourdomain.com/images/avatar-placeholder.png", List.of(ruoloDb1));
         Utente utente2 = new Utente(0, "Lellykelly", "lellykelly@libero.it", "lellykelly", "Lelly", "Kelly", "https://yourdomain.com/images/avatar-placeholder.png", List.of(ruoloDb1));
         Utente utente3 = new Utente(0, "JackSparow", "jackjack@libero.it", "jackspaaaar", "Jack", "Sparrow", "https://yourdomain.com/images/avatar-placeholder.png", List.of(ruoloDb3));
-        utenteService.save(utente1);
-        utenteService.save(utente2);
-        utenteService.save(utente3);
+        //utenteService.save(utente1);
+        //utenteService.save(utente2);
+        //utenteService.save(utente3);
     }
 }
