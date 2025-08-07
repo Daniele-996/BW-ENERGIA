@@ -55,6 +55,7 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         AntPathMatcher matcher = new AntPathMatcher();
         return matcher.match("/api/auth/**", request.getServletPath())
-                || matcher.match("/api/clienti/**", request.getServletPath());
+                || matcher.match("/api/clienti/**", request.getServletPath())
+                || matcher.match("/api/utenti/**", request.getServletPath());
     }
 }

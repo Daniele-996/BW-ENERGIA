@@ -23,6 +23,7 @@ public class SecurityConfig {
         httpSecurity.sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         httpSecurity.authorizeHttpRequests(h -> h.requestMatchers("/api/auth/**").permitAll());
         httpSecurity.authorizeHttpRequests(h -> h.requestMatchers("/api/clienti/**").permitAll());
+        httpSecurity.authorizeHttpRequests(h -> h.requestMatchers("/api/utenti/**").permitAll());
 
 
         httpSecurity.cors(Customizer.withDefaults());

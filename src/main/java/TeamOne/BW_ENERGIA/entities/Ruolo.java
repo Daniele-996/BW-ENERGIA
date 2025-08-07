@@ -1,5 +1,6 @@
 package TeamOne.BW_ENERGIA.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +22,7 @@ public class Ruolo {
     private String ruolo;
 
     @ManyToMany(mappedBy = "ruoli")
+    @JsonIgnore
     private List<Utente> utenti = new ArrayList<>();
 
     public Ruolo(String ruolo) {
