@@ -1,7 +1,9 @@
 package TeamOne.BW_ENERGIA.controllers;
 
+import TeamOne.BW_ENERGIA.entities.Comune;
 import TeamOne.BW_ENERGIA.entities.Indirizzo;
 import TeamOne.BW_ENERGIA.payloads.IndirizzoDTO;
+import TeamOne.BW_ENERGIA.repositories.ComuneRepository;
 import TeamOne.BW_ENERGIA.services.IndirizzoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class IndirizzoController {
 
     @Autowired
     private IndirizzoService indirizzoService;
+
+    @Autowired
+    private ComuneRepository comuneRepository;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -49,7 +54,9 @@ public class IndirizzoController {
         existing.setVia(dto.via());
         existing.setCivico(dto.civico());
         existing.setLocalita(dto.localita());
-        existing.setComune(dto.comune());
+        Comune comune = comuneRepository.findById(dto.comuneId())
+                .orElseThrow(() -> new RuntimeException("Comune non trovato"));
+        existing.setComune(comune);
         return indirizzoService.save(existing);
     }
 
