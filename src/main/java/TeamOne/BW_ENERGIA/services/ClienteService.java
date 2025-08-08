@@ -1,6 +1,8 @@
 package TeamOne.BW_ENERGIA.services;
 
 import TeamOne.BW_ENERGIA.entities.Cliente;
+import TeamOne.BW_ENERGIA.entities.Indirizzo;
+import TeamOne.BW_ENERGIA.payloads.ClienteDTO;
 import TeamOne.BW_ENERGIA.repositories.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -77,5 +79,26 @@ public class ClienteService {
 
     public Page<Cliente> findAllFilter(Specification<Cliente> spec, Pageable pageable) {
         return clienteRepository.findAll(spec, pageable);
+    }
+
+    public Cliente fromDTO(ClienteDTO dto, Indirizzo indirizzoSedeOp, Indirizzo indirizzoLegale) {
+        Cliente cliente = new Cliente();
+        cliente.setRagioneSociale(dto.ragioneSociale());
+        cliente.setPartitaIva(dto.partitaIva());
+        cliente.setEmail(dto.email());
+        cliente.setDataInserimento(dto.dataInserimento());
+        cliente.setDataUltimoContatto(dto.dataUltimoContatto());
+        cliente.setFatturatoAnnuale(dto.fatturatoAnnuale());
+        cliente.setPec(dto.pec());
+        cliente.setTelefono(dto.telefono());
+        cliente.setEmailContatto(dto.emailContatto());
+        cliente.setNomeContatto(dto.nomeContatto());
+        cliente.setCognomeContatto(dto.cognomeContatto());
+        cliente.setTelefonoContatto(dto.telefonoContatto());
+        cliente.setLogoAziendale(dto.logoAziendale());
+        cliente.setTipo(dto.tipo());
+        cliente.setIndirizzoSedeOp(indirizzoSedeOp);
+        cliente.setIndirizzoLegale(indirizzoLegale);
+        return cliente;
     }
 }

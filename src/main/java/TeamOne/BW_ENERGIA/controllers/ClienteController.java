@@ -1,7 +1,10 @@
 package TeamOne.BW_ENERGIA.controllers;
 
 import TeamOne.BW_ENERGIA.entities.Cliente;
+import TeamOne.BW_ENERGIA.entities.Indirizzo;
+import TeamOne.BW_ENERGIA.payloads.ClienteDTO;
 import TeamOne.BW_ENERGIA.services.ClienteService;
+import TeamOne.BW_ENERGIA.services.IndirizzoService;
 import TeamOne.BW_ENERGIA.specifications.ClienteSpecifications;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +24,12 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
+    @Autowired
+    private IndirizzoService indirizzoService;
+
     // Paginazione
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isAuthenticated()")
     public Page<Cliente> getAll(Pageable pageable) {
         return clienteService.findAll(pageable);
     }
@@ -32,7 +37,6 @@ public class ClienteController {
     // Dettaglio cliente
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isAuthenticated()")
     public Cliente getById(@PathVariable Long id) {
         return clienteService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente non trovato"));
@@ -42,7 +46,13 @@ public class ClienteController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
-    public Cliente create(@RequestBody Cliente cliente) {
+    public Cliente create(@RequestBody ClienteDTO dto) {
+        Indirizzo indirizzoSedeOp = indirizzoService.findById(dto.indirizzoSedeOpId())
+                .orElseThrow(() -> new RuntimeException("Indirizzo sede operativa non trovato"));
+        Indirizzo indirizzoLegale = indirizzoService.findById(dto.indirizzoLegaleId())
+                .orElseThrow(() -> new RuntimeException("Indirizzo sede legale non trovato"));
+
+        Cliente cliente = clienteService.fromDTO(dto, indirizzoSedeOp, indirizzoLegale);
         return clienteService.save(cliente);
     }
 
@@ -50,10 +60,17 @@ public class ClienteController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ADMIN')")
-    public Cliente update(@PathVariable Long id, @RequestBody Cliente cliente) {
+    public Cliente update(@PathVariable Long id, @RequestBody ClienteDTO dto) {
         Cliente existing = clienteService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente non trovato"));
-        BeanUtils.copyProperties(cliente, existing, "id", "fatture");
+
+        Indirizzo indirizzoSedeOp = indirizzoService.findById(dto.indirizzoSedeOpId())
+                .orElseThrow(() -> new RuntimeException("Indirizzo sede operativa non trovato"));
+        Indirizzo indirizzoLegale = indirizzoService.findById(dto.indirizzoLegaleId())
+                .orElseThrow(() -> new RuntimeException("Indirizzo sede legale non trovato"));
+
+        Cliente updated = clienteService.fromDTO(dto, indirizzoSedeOp, indirizzoLegale);
+        BeanUtils.copyProperties(updated, existing, "id", "fatture");
         return clienteService.save(existing);
     }
 
@@ -75,7 +92,6 @@ public class ClienteController {
     //GET /api/clienti?sort=indirizzoLegale.provincia,asc
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isAuthenticated()")
     public Page<Cliente> searchClienti(
             @RequestParam(required = false) Integer fatturatoMin,
             @RequestParam(required = false) Integer fatturatoMax,

@@ -27,14 +27,13 @@ public class UtenteController {
     //TODO:Renderlo pagebla
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isAuthenticated()")
     public List<Utente> getAll() {
         return utenteService.findAll();
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ADMIN')")
     public Utente getById(@PathVariable Long id) {
         return utenteService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Utente non trovato"));
