@@ -30,6 +30,7 @@ public class ClienteController {
     // Paginazione
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Page<Cliente> getAll(Pageable pageable) {
         return clienteService.findAll(pageable);
     }
@@ -37,6 +38,7 @@ public class ClienteController {
     // Dettaglio cliente
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Cliente getById(@PathVariable Long id) {
         return clienteService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente non trovato"));
