@@ -90,7 +90,7 @@ public class FatturaController {
         }
 
         if (statoFattura != null) {
-            spec = (spec == null) ? FatturaSpecifications.statoEquals(statoFattura) : spec.and(FatturaSpecifications.statoEquals(statoFattura));
+            spec = (spec == null) ? FatturaSpecifications.statoFatturaEquals(statoFattura) : spec.and(FatturaSpecifications.statoFatturaEquals(statoFattura));
         }
 
         if (data != null) {

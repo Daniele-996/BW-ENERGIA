@@ -11,8 +11,8 @@ public class FatturaSpecifications {
         return (root, query, cb) -> cb.equal(root.get("cliente").get("id"), clienteId);
     }
 
-    public static Specification<Fattura> statoEquals(String stato) {
-        return (root, query, cb) -> cb.equal(cb.lower(root.get("stato")), stato.toLowerCase());
+    public static Specification<Fattura> statoFatturaEquals(String stato) {
+        return (root, query, cb) -> cb.equal(cb.lower(root.get("statoFattura")), stato.toLowerCase());
     }
 
     public static Specification<Fattura> dataEquals(LocalDate data) {
