@@ -146,7 +146,7 @@ public class ClienteController {
                             case "logoAziendale" -> cliente.setLogoAziendale((String) value);
                         }
                     });
-                    return clienteService.save(cliente);
+                    return clienteService.update(cliente);
                 })
                 .orElseThrow(() -> new RuntimeException("Cliente non trovato"));
 
