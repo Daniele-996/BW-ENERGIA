@@ -11,10 +11,11 @@ import TeamOne.BW_ENERGIA.repositories.UtenteRepository;
 import TeamOne.BW_ENERGIA.tools.JWTTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.Collections;
 
@@ -33,7 +34,8 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public ResponseEntity<?> register(RegisterRequest request) {
+    @ResponseStatus(HttpStatus.OK)
+    public String register(RegisterRequest request) {
         if (utenteRepository.existsByUsername(request.username()))
             throw new BadRequestException("Username già esistente");
 
@@ -53,18 +55,18 @@ public class AuthService {
         utente.setRuoli(Collections.singletonList(ruolo));
 
         utenteRepository.save(utente);
-        return ResponseEntity.ok("Registrazione avvenuta con successo");
+        return "Registrazione avvenuta con successo";
     }
 
-    public ResponseEntity<?> login(LoginRequest request) {
+    @ResponseStatus(HttpStatus.OK)
+    public String login(LoginRequest request) {
         Utente utente = utenteRepository.findByUsername(request.username())
                 .orElseThrow(() -> new UnauthorizedException("Username o password non validi"));
 
         if (!passwordEncoder.matches(request.password(), utente.getPassword()))
             throw new UnauthorizedException("Username o password non validi");
 
-        String token = jwtTools.createToken(utente);
-        return ResponseEntity.ok(token);
+        return jwtTools.createToken(utente);
     }
 
     @Bean
