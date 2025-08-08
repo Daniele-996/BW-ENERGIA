@@ -35,7 +35,7 @@ public class Utente implements UserDetails {
 
     private String avatar = "https://yourdomain.com/images/avatar-placeholder.png";
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "utenti_ruoli",
             joinColumns = @JoinColumn(name = "utenti_id"),
             inverseJoinColumns = @JoinColumn(name = "ruoli_id"))
@@ -45,7 +45,7 @@ public class Utente implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return ruoli.stream()
-                .map(ruolo -> new SimpleGrantedAuthority("RUOLO_" + ruolo.getRuolo()))
+                .map(ruolo -> new SimpleGrantedAuthority(ruolo.getRuolo()))
                 .collect(Collectors.toList());
     }
 }

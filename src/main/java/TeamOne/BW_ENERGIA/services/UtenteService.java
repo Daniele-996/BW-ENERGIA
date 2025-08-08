@@ -2,14 +2,11 @@ package TeamOne.BW_ENERGIA.services;
 
 import TeamOne.BW_ENERGIA.entities.Ruolo;
 import TeamOne.BW_ENERGIA.entities.Utente;
-import TeamOne.BW_ENERGIA.exceptions.BadRequestException;
 import TeamOne.BW_ENERGIA.repositories.RuoloRepository;
 import TeamOne.BW_ENERGIA.repositories.UtenteRepository;
 import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -48,8 +45,9 @@ public class UtenteService {
         return utenteRepository.findAll();
     }
 
-    public Optional<Utente> findById(Long id) {
-        return utenteRepository.findById(id);
+    public Utente findById(Long id) {
+        return utenteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
     }
 
     public Utente save(Utente utente) {
@@ -76,7 +74,7 @@ public class UtenteService {
         return utenteRepository.existsByUsername(username);
     }
 
-    public String uploadAvatar(MultipartFile file) {
+    /*public String uploadAvatar(MultipartFile file) {
         try {
             Map result = imgUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
             String imageURL = (String) result.get("url");
@@ -84,7 +82,7 @@ public class UtenteService {
         } catch (Exception e) {
             throw new BadRequestException("Ci sono stati problemi nel salvataggio del file!");
         }
-    }
+    }*/
 
     public List<Ruolo> getRuoliByIds(List<Long> ids) {
         return ruoloRepository.findAllById(ids);
