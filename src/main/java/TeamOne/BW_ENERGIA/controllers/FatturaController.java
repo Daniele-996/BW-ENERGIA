@@ -26,7 +26,7 @@ public class FatturaController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Page<Fattura> getAll(@RequestParam(defaultValue = "0") int page,
                                 @RequestParam(defaultValue = "15") int size,
                                 @RequestParam(defaultValue = "id") String sortBy) {
@@ -35,28 +35,28 @@ public class FatturaController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Fattura getById(@PathVariable Long id) {
         return fatturaService.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Fattura create(@RequestBody @Validated FatturaDTO payload) {
         return fatturaService.creaFattura(payload);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Fattura update(@PathVariable Long id, @RequestBody @Validated FatturaDTO payload) {
         return fatturaService.findByIdAndUpdate(id, payload);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void delete(@PathVariable Long id) {
         fatturaService.findByIdAndDelete(id);
     }
@@ -69,7 +69,7 @@ public class FatturaController {
     //GET /api/fatture/search?anno=2025
     //GET /api/fatture/search?importoMin=100&importoMax=500
     @GetMapping("/search")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Page<Fattura> searchFatture(
             @RequestParam(required = false) Long clienteId,
             @RequestParam(required = false) String statoFattura,
@@ -111,7 +111,7 @@ public class FatturaController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Fattura patchFattura(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return fatturaService.patchFattura(id, updates);
     }

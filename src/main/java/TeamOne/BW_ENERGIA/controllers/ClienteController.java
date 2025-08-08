@@ -45,7 +45,7 @@ public class ClienteController {
     // Aggiungi cliente
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Cliente create(@RequestBody ClienteDTO dto) {
         Indirizzo indirizzoSedeOp = indirizzoService.findById(dto.indirizzoSedeOpId())
                 .orElseThrow(() -> new RuntimeException("Indirizzo sede operativa non trovato"));
@@ -59,7 +59,7 @@ public class ClienteController {
     // Modifica cliente
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Cliente update(@PathVariable Long id, @RequestBody ClienteDTO dto) {
         Cliente existing = clienteService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente non trovato"));
@@ -77,9 +77,9 @@ public class ClienteController {
     // Elimina cliente
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void delete(@PathVariable Long id) {
-        if (!clienteService.findById(id).isPresent()) {
+        if (clienteService.findById(id).isEmpty()) {
             throw new RuntimeException("Cliente non trovato");
         }
         clienteService.deleteById(id);
@@ -123,7 +123,7 @@ public class ClienteController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Cliente patchCliente(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return clienteService.findById(id)
                 .map(cliente -> {
