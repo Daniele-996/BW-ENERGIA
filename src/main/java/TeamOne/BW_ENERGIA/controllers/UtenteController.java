@@ -32,14 +32,14 @@ public class UtenteController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Utente getById(@PathVariable Long id) {
         return utenteService.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Utente create(@RequestBody @Valid UtenteDTO dto) {
         if (utenteService.existsByEmail(dto.email()) || utenteService.existsByUsername(dto.username())) {
             throw new RuntimeException("Email o username già esistenti");
@@ -55,7 +55,7 @@ public class UtenteController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Utente update(@PathVariable Long id, @RequestBody @Valid UtenteDTO dto) {
         Utente existing = utenteService.findById(id);
         existing.setUsername(dto.username());
@@ -68,21 +68,21 @@ public class UtenteController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void delete(@PathVariable Long id) {
         utenteService.delete(id);
     }
 
 /*    @PatchMapping("/{userId}/avatar")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAuthority('ADMIN')")
     public String uploadImage(@RequestParam("avatar") MultipartFile file) {
         return this.utenteService.uploadAvatar(file);
     }
 
     @PatchMapping("/{id}/ruoli")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAuthority('ADMIN')")
     public Utente updateRuoli(
             @PathVariable Long id,
             @RequestBody List<Long> idRuoli) {

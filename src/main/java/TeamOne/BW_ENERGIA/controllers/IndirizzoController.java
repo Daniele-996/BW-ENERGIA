@@ -25,14 +25,14 @@ public class IndirizzoController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Page<Indirizzo> getAll(Pageable pageable) {
         return indirizzoService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Indirizzo getById(@PathVariable Long id) {
         return indirizzoService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Indirizzo non trovato"));
@@ -40,14 +40,14 @@ public class IndirizzoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Indirizzo create(@RequestBody @Valid Indirizzo indirizzo) {
         return indirizzoService.save(indirizzo);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Indirizzo update(@PathVariable Long id, @RequestBody @Valid IndirizzoDTO dto) {
         Indirizzo existing = indirizzoService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Indirizzo non trovato"));
@@ -62,9 +62,9 @@ public class IndirizzoController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void delete(@PathVariable Long id) {
-        if (!indirizzoService.findById(id).isPresent()) {
+        if (indirizzoService.findById(id).isEmpty()) {
             throw new RuntimeException("Indirizzo non trovato");
         }
         indirizzoService.deleteById(id);
