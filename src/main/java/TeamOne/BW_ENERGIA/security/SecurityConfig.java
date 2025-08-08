@@ -1,4 +1,3 @@
-// src/main/java/TeamOne/BW_ENERGIA/security/SecurityConfig.java
 package TeamOne.BW_ENERGIA.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +24,9 @@ public class SecurityConfig {
         httpSecurity.formLogin(formLogin -> formLogin.disable());
         httpSecurity.csrf(csrf -> csrf.disable());
         httpSecurity.sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        httpSecurity.authorizeHttpRequests(h -> h.requestMatchers("/api/auth/**").permitAll());
-        httpSecurity.authorizeHttpRequests(h -> h.requestMatchers("/api/clienti/**").permitAll());
-        httpSecurity.authorizeHttpRequests(h -> h.requestMatchers("/api/utenti/**").permitAll());
-
+        httpSecurity.authorizeHttpRequests(h -> h.requestMatchers("/api/**").permitAll());
 
         httpSecurity.cors(Customizer.withDefaults());
-
-        // Aggiungere il filtro JWT prima di UsernamePasswordAuthenticationFilter
         httpSecurity.addFilterBefore(jwtCheckerFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
