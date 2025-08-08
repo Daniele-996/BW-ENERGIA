@@ -1,5 +1,6 @@
 package TeamOne.BW_ENERGIA.controllers;
 
+import TeamOne.BW_ENERGIA.entities.Ruolo;
 import TeamOne.BW_ENERGIA.entities.Utente;
 import TeamOne.BW_ENERGIA.payloads.UtenteDTO;
 import TeamOne.BW_ENERGIA.services.UtenteService;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -50,7 +52,7 @@ public class UtenteController {
         utente.setPassword(passwordEncoder.encode(dto.password()));
         utente.setNome(dto.nome());
         utente.setCognome(dto.cognome());
-        return utenteService.save(utente);
+        return utenteService.update(utente);
     }
 
     @PutMapping("/{id}")
@@ -63,7 +65,7 @@ public class UtenteController {
         existing.setPassword(passwordEncoder.encode(dto.password()));
         existing.setNome(dto.nome());
         existing.setCognome(dto.cognome());
-        return utenteService.save(existing);
+        return utenteService.update(existing);
     }
 
     @DeleteMapping("/{id}")
@@ -73,25 +75,22 @@ public class UtenteController {
         utenteService.delete(id);
     }
 
-/*    @PatchMapping("/{userId}/avatar")
+    @PatchMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String uploadImage(@RequestParam("avatar") MultipartFile file) {
         return this.utenteService.uploadAvatar(file);
     }
 
     @PatchMapping("/{id}/ruoli")
     @ResponseStatus(HttpStatus.OK)
-@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Utente updateRuoli(
             @PathVariable Long id,
             @RequestBody List<Long> idRuoli) {
-        return utenteService.findById(id)
-                .map(utente -> {
-                    List<Ruolo> nuoviRuoli = utenteService.getRuoliByIds(idRuoli);
-                    utente.setRuoli(nuoviRuoli);
-                    return utenteService.save(utente);
-                })
-                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
-    }*/
+        Utente utente = utenteService.findById(id);
+        List<Ruolo> nuoviRuoli = utenteService.getRuoliByIds(idRuoli);
+        utente.setRuoli(nuoviRuoli);
+        return utenteService.save(utente);
+    }
 }

@@ -84,21 +84,25 @@ public class ClienteService {
     public Cliente fromDTO(ClienteDTO dto, Indirizzo indirizzoSedeOp, Indirizzo indirizzoLegale) {
         Cliente cliente = new Cliente();
         cliente.setRagioneSociale(dto.ragioneSociale());
-        cliente.setPartitaIva(dto.partitaIva());
+        cliente.setPartitaIva(Integer.parseInt(dto.partitaIva()));
         cliente.setEmail(dto.email());
         cliente.setDataInserimento(dto.dataInserimento());
         cliente.setDataUltimoContatto(dto.dataUltimoContatto());
-        cliente.setFatturatoAnnuale(dto.fatturatoAnnuale());
+        cliente.setFatturatoAnnuale(Integer.parseInt(dto.fatturatoAnnuale()));
         cliente.setPec(dto.pec());
-        cliente.setTelefono(dto.telefono());
+        cliente.setTelefono(Integer.parseInt(dto.telefono()));
         cliente.setEmailContatto(dto.emailContatto());
         cliente.setNomeContatto(dto.nomeContatto());
         cliente.setCognomeContatto(dto.cognomeContatto());
-        cliente.setTelefonoContatto(dto.telefonoContatto());
+        cliente.setTelefonoContatto(Integer.parseInt(dto.telefonoContatto()));
         cliente.setLogoAziendale(dto.logoAziendale());
         cliente.setTipo(dto.tipo());
         cliente.setIndirizzoSedeOp(indirizzoSedeOp);
         cliente.setIndirizzoLegale(indirizzoLegale);
         return cliente;
+    }
+
+    public Cliente update(Cliente cliente) {
+        return clienteRepository.save(cliente);
     }
 }

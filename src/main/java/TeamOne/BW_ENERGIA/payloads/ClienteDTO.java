@@ -11,7 +11,7 @@ public record ClienteDTO(
         String ragioneSociale,
 
         @NotNull
-        int partitaIva,
+        String partitaIva,
 
         @NotNull
         @Email
@@ -24,14 +24,14 @@ public record ClienteDTO(
         LocalDate dataUltimoContatto,
 
         @NotNull
-        int fatturatoAnnuale,
+        String fatturatoAnnuale,
 
         @NotNull
         @Email
         String pec,
 
         @NotNull
-        int telefono,
+        String telefono,
 
         @NotNull
         @Email
@@ -44,7 +44,7 @@ public record ClienteDTO(
         String cognomeContatto,
 
         @NotNull
-        int telefonoContatto,
+        String telefonoContatto,
 
         @NotNull
         String logoAziendale,
